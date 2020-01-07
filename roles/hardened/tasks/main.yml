@@ -1,0 +1,9 @@
+---
+- name: Install kernel
+  pacman:
+    name:
+      - linux-hardened
+      - linux-hardened-headers
+    state: present
+  notify:
+    - rebuild grub

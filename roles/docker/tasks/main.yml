@@ -1,0 +1,54 @@
+---
+- name: Install docker rootless
+  aur:
+    name: docker-rootless
+    user: "{{ users[0].name }}"
+
+- name: Configure kernel
+  lineinfile:
+    path: "/etc/sysctl.d/99-docker-rootless.conf"
+    regexp: '^kernel.unprivileged_userns_clone=1$'
+    line: kernel.unprivileged_userns_clone=1
+    create: yes
+    mode: 0644
+    state: present
+
+- name: Refresh system
+  command: sysctl --system
+
+- name: Configure subuid
+  lineinfile:
+    path: "/etc/subuid"
+    regexp: "^{{ item.name }}:[0-9]{6}:[0-9]{5}"
+    line: "{{ item.name }}:231072:65536"
+    create: yes
+    mode: 0644
+    state: present
+  loop: "{{ users }}"
+
+- name: Configure subgid
+  lineinfile:
+    path: "/etc/subgid"
+    regexp: "^{{ item.name }}:[0-9]{6}:[0-9]{5}"
+    line: "{{ item.name }}:231072:65536"
+    create: yes
+    mode: 0644
+    state: present
+  loop: "{{ users }}"
+
+- name: Enable at login
+  systemd:
+    scope: user
+    name: docker
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
+
+- name: Set environment
+  lineinfile:
+    path: "/home/{{ item.name }}/.zshrc"
+    regexp: '^export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
+    line: 'export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
+  loop: "{{ users }}"

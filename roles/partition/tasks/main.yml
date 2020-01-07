@@ -1,0 +1,17 @@
+---
+- name: Partition drive
+  parted:
+    label: "{{ item.0.table }}"
+    device: "{{ item.0.device }}"
+    # Parted indexes partitions starting from 1:
+    number: "{{ item.1.number }}"
+    name: "{{ item.1.name }}"
+    part_start: "{{ item.1.start }}"
+    part_end: "{{ item.1.end }}"
+    part_type: "{{ item.1.type|default(omit) }}"
+    flags: "{{ item.1.flags|default(omit) }}"
+    state: present
+  with_subelements:
+    - "{{ sata_drives }}"
+    - partitions
+

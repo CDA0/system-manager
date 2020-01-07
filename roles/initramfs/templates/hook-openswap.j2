@@ -1,0 +1,19 @@
+# Managed by ansible
+
+run_hook ()
+{
+    ## Optional: To avoid race conditions
+    x=0;
+    while [ ! -b /dev/mapper/root ] && [ $x -le 10 ]; do
+       x=$((x+1))
+       sleep .2
+    done
+    ## End of optional
+
+    mkdir crypto_key_device
+    mount /dev/mapper/root crypto_key_device
+    cryptsetup open --key-file crypto_key_device{{ luks_keys_location }}/{{ item.name }}.keyfile /dev/{{ item.volume_group }}/{{ item.name }} swap
+    umount crypto_key_device
+    rm -rf crypto_key_device
+}
+

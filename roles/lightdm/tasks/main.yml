@@ -1,0 +1,22 @@
+---
+- name: Install lightdm
+  pacman:
+    name: lightdm
+    state: present
+
+- name: Install lightdm slick greeter
+  aur:
+    name: lightdm-slick-greeter
+    user: "{{ user[0].name }}"
+
+- name: Enable greeter
+  lineinfile:
+    path: /etc/lightdm/lightdm.conf
+    regexp: '^greeter='
+    line: greeter=lightdm-click-greeter
+
+- name: Enable lightdm
+  systemd:
+    name: lightdm.service
+    enabled: yes
+

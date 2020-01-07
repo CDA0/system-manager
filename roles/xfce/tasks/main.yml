@@ -1,0 +1,7 @@
+---
+- name: Install xfce
+  pacman:
+    name:
+      - xfce4
+      - xfce4-screensaver
+    state: present

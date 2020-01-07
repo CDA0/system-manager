@@ -1,0 +1,10 @@
+---
+- name: Install darktable
+  pacman:
+    name: darktable
+    state: present
+
+- name: Install gimp
+  pacman:
+    name: gimp
+    state: present

@@ -1,0 +1,14 @@
+---
+- name: Bash
+  pacman:
+    name:
+      - bash
+      - bash-completion
+    state: present
+
+- name: Zsh
+  pacman:
+    name:
+      - zsh
+      - zsh-completions
+    state: present

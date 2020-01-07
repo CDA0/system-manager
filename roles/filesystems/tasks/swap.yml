@@ -1,0 +1,12 @@
+---
+- name: Create lvm swap
+  filesystem:
+    fstype: "{{ item.filesystem }}"
+    dev: "/dev/mapper/{{ item.mapper_name }}"
+  when: item.filesystem is defined and item.filesystem == "swap"
+  loop: "{{ logical_volumes }}"
+
+- name: Swap
+  command: "swapon /dev/mapper/{{ item.mapper_name }}"
+  when: ansible_swaptotal_mb < 1 and item.filesystem is defined and item.filesystem == "swap"
+  loop: "{{ logical_volumes }}"

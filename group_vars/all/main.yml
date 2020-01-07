@@ -1,0 +1,96 @@
+machine_aliases:
+  20AWS37100: t440p.yml
+  VirtualBox: vbox.yml
+
+locales:
+  - en_GB
+
+timezone: Europe/London
+
+arch_root: /mnt
+
+# File name for encryption key used by dmcrypt to encrypt non-root
+# partitions. The key is stored on encrypted root partition which is unlocked
+# with a password.
+luks_keys_location: /etc/luks-keys
+
+country: United Kingdom
+
+# First user is used as aur builder
+users:
+  - name: craig
+    uid: 1000
+    group: craig
+    shell: /usr/bin/zsh
+    groups:
+      - uucp
+      - wheel
+      - sys
+      - video
+      - systemd-journal
+    dotfiles:
+      url: https://gitlab.com/cda0/dotfiles
+      destination: .dotfiles
+      rcup_flags: -fx README.md
+
+bootloader: grub
+
+passwordless_sudo: []
+
+pacstrap_packages:
+  - base
+  - base-devel
+  - ansible
+
+basestrap_packages:
+  - base
+  - base-devel
+  - reflector
+  - runit
+  - elogind-runit
+
+base_packages:
+  - base
+  - base-devel
+  - linux
+  - linux-headers
+  - linux-firmware
+  - mdadm
+  - lvm2
+  - dhcpcd
+  - net-tools
+  - wireless_tools
+  - wpa_supplicant
+
+system_tools:
+  - arch-wiki-lite
+  - arch-wiki-docs
+  - fzf
+  - git
+  - exa
+  - neofetch
+  - neovim
+  - openssh
+  - ranger
+  - ripgrep
+  - tmux
+
+initramfs_hooks:
+  - base
+  - udev
+  - autodetect
+  - keyboard
+  - keymap
+  - consolefont
+  - modconf
+  - block
+  - mdadm_udev
+  - lvm2
+  - encrypt
+  - openswap
+  - resume
+  - filesystems
+  - fsck
+
+aur:
+  dir: aur

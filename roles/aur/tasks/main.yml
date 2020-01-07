@@ -1,0 +1,6 @@
+---
+- name: Install yay
+  aur:
+    user: "{{ users[0].name }}"
+    name: yay
+    skip_pgp: yes

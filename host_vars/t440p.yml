@@ -1,0 +1,110 @@
+hostname: moana
+
+keymap: uk
+consolefont: Lat2-Terminus16
+
+bootloader: grub
+
+desktop: xfce
+
+x_drivers:
+  - xf86-input-synaptics
+  - mesa
+  - intel-hybrid-codec-driver
+  - vulkan-intel
+
+kernel_cmdline: 'acpi_osi= i915 modeset=1'
+
+sata_drives:
+  - device: /dev/disk/by-id/ata-TS120GMTS420S_F586330108
+    table: gpt
+    partitions:
+      - name: bios
+        number: 1
+        start: 0%
+        end: 1MiB
+        flags: [bios_grub]
+
+      - name: efi
+        number: 2
+        start: 1MiB
+        end: 512MiB
+        flags: [esp]
+        filesystem: vfat
+        mountpoint: /efi
+
+      - name: root
+        number: 3
+        start: 512MiB
+        end: 100%
+        flags: [lvm]
+        encrypt: true
+
+  - device: /dev/disk/by-id/ata-TOSHIBA_MK5061GSYN_X2OCY0Z5F
+    table: gpt
+    partitions:
+      - name: raid
+        number: 1
+        start: 0%
+        end: 100%
+        flags: [raid]
+
+  - device: /dev/disk/by-id/ata-ST500LM021-1KJ152_W622TAES
+    table: gpt
+    partitions:
+      - name: raid
+        number: 1
+        start: 0%
+        end: 100%
+        flags: [raid]
+
+mdadm_arrays:
+  - name: cryptmd0
+    mapper_name: md0
+    devices:
+      - /dev/disk/by-id/ata-TOSHIBA_MK5061GSYN_X2OCY0Z5F-part1
+      - /dev/disk/by-id/ata-ST500LM021-1KJ152_W622TAES-part1
+    filesystem: ext4
+    level: 1
+    encrypt: true
+    mountpoint: /data
+    state: present
+    keyfile: true
+    use_passphrase: true
+
+volume_groups:
+  - name: vgroot
+    pvs:
+      - /dev/disk/by-id/ata-TS120GMTS420S_F586330108-part3
+    
+logical_volumes:
+  - name: cryptroot
+    volume_group: vgroot
+    mapper_name: root
+    size: 32G
+    filesystem: ext4
+    mountpoint: /
+    encrypt: true
+    use_passphrase: true
+    keyfile: true
+
+  - name: cryptswap
+    volume_group: vgroot
+    mapper_name: swap
+    size: 20G
+    filesystem: swap
+    encrypt: true
+    use_passphrase: true
+    keyfile: true
+
+  - name: crypthome
+    volume_group: vgroot
+    mapper_name: home
+    size: 100%FREE
+    keyfile: true
+    filesystem: ext4
+    mountpoint: /home
+    encrypt: true
+    use_passphrase: true
+    shrink: no
+

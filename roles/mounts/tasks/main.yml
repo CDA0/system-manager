@@ -1,0 +1,30 @@
+---
+- include: root.yml
+
+- name: Mount partition filesystems
+  mount:
+    path: "{{ arch_root }}{{ item.1.mountpoint }}"
+    src: "{{ item.0.device }}-part{{ item.1.number }}"
+    fstype: "{{ item.1.filesystem }}"
+    state: mounted
+  when: item.1.mountpoint is defined and "/" != item.1.mountpoint
+  with_subelements:
+    - "{{ sata_drives }}"
+    - partitions
+
+- name: Mount lvm filesystems
+  mount:
+    path: "{{ arch_root }}{{ item.mountpoint }}"
+    src: "/dev/mapper/{{ item.mapper_name }}"
+    fstype: "{{ item.filesystem }}"
+    state: mounted
+  when: item.mountpoint is defined and "/" != item.mountpoint
+  loop: "{{ logical_volumes }}"
+
+- name: Mount raid
+  mount:
+    path: "{{ arch_root }}{{ item.mountpoint }}"
+    src: "/dev/mapper/{{ item.mapper_name }}"
+    fstype: "{{ item.filesystem }}"
+    state: mounted
+  loop: "{{ mdadm_arrays }}"

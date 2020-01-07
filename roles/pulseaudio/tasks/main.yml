@@ -1,0 +1,28 @@
+---
+- name: Install pulseaudio
+  pacman:
+    name: pulseaudio
+    state: present
+
+- name: Install pulsemixer
+  pacman:
+    name: pulsemixer
+    state: present
+
+- name: Install pavucontrol
+  pacman:
+    name: pavucontrol
+    state: preset
+
+- name: Enable at login
+  systemd:
+    scope: user
+    name: pulseaudio
+    enabled: yes
+
+- name: Install pulseaudio panel for xfce
+  pacman:
+    name: xfce4-pulseaudio-plugin
+    state: present
+  when: "'xfce' in desktop"
+

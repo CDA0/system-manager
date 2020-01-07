@@ -1,0 +1,19 @@
+---
+- name: Install sudo
+  pacman:
+    name: sudo
+    state: present
+
+- name: configure sudoers
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers
+    mode: 440
+
+- name: Set root password
+  user:
+    name: root
+    password: "{{ root_password }}"
+
+- name: lock root account
+  command: passwd -l root

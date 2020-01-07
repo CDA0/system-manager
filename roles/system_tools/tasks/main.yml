@@ -1,0 +1,5 @@
+---
+- name: Install system tools
+  pacman:
+    name: "{{ system_tools }}"
+    state: present

@@ -1,0 +1,5 @@
+---
+- name: Install srandrd
+  aur:
+    user: "{{ user[0].name }}"
+    name: srandrd

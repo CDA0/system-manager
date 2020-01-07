@@ -1,0 +1,15 @@
+# Managed by ansible
+
+build ()
+{
+   add_runscript
+}
+
+help ()
+{
+cat<<HELPEOF
+  This opens the swap encrypted partition /dev/{{ item.volume_group }}/{{ item.name }} in /dev/mapper/swap
+HELPEOF
+}
+
+

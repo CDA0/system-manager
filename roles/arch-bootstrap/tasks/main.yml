@@ -1,0 +1,13 @@
+---
+- name: sync system clock
+  command: timedatectl set-ntp true
+
+- name: Bootstrap base Arch Linux.
+  command: "pacstrap {{ arch_root }} {{ pacstrap_packages | join(' ') }}"
+
+- name: Generate fstab file
+  shell: genfstab -U {{ arch_root }} > {{ arch_root }}/etc/fstab
+
+- name: Generate raid config
+  shell: "mdadm --detail --scan >> {{ arch_root }}/etc/mdadm.conf"
+  when: mdadm_arrays is defined and (mdadm_arrays | length > 0)

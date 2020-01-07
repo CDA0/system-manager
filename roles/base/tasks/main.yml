@@ -1,0 +1,29 @@
+---
+- name: Set console font
+  lineinfile:
+    path: /etc/vconsole.conf
+    regexp: '^FONT='
+    line: "FONT={{ consolefont }}"
+    create: yes
+
+- name: Set console keymap
+  lineinfile:
+    path: /etc/vconsole.conf
+    regexp: '^KEYMAP='
+    line: "KEYMAP={{ keymap }}"
+    create: yes
+
+- name: Configure hostname
+  lineinfile:
+    path: /etc/hostname
+    line: "{{ hostname }}"
+    create: yes
+
+- name: Set hostname in /etc/hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: 0644
+
+- include: packages.yml
+- include: shell.yml

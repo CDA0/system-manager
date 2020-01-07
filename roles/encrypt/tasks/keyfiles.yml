@@ -1,0 +1,12 @@
+---
+- name: Create key files for lvm
+  command: "dd if=/dev/urandom of=/{{ item.name }}.keyfile bs=1 count=256 creates=/{{ item.name }}.keyfile"
+  when: item.keyfile is defined and item.keyfile
+  loop: "{{ logical_volumes }}"
+
+
+- name: Create keyfiles for raid
+  command: "dd if=/dev/urandom of=/{{ item.name }}.keyfile bs=1 count=256 creates=/{{ item.name }}.keyfile"
+  when: item.keyfile is defined and item.keyfile
+  loop: "{{ mdadm_arrays }}"
+

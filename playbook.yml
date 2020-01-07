@@ -1,0 +1,11 @@
+---
+- name: Configure Arch 
+  hosts: hosts
+  connection: local
+  become: yes
+  vars_files:
+    - "host_vars/{{ machine_aliases[ansible_product_name] }}"
+  roles:
+    - { role: tlp, tags: ['tlp'] }
+    - { role: docker, tags: ['docker'] }
+

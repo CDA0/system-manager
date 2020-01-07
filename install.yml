@@ -1,0 +1,77 @@
+---
+- name: Bootstrap Archlinux
+  hosts: localhost
+  connection: local
+  become: yes
+  vars_files:
+    - "host_vars/{{ machine_aliases[ansible_product_name] }}"
+  vars_prompt:
+    - name: luks_passphrase
+      prompt: "encryption passphrase:"
+      private: yes
+      confirm: yes
+  roles:
+    - { role: partition, tags: ['partition'] }
+    - { role: lvm, tags: ['lvm'] }
+    - { role: mdadm, tags: ['mdadm'] }
+    - { role: encrypt, tags: ['encrypt'] }
+    - { role: filesystems, tags: ['filesystems'] }
+    - { role: mounts, tags: ['mounts'] }
+    - { role: "arch-bootstrap", tags: ['bootstrap'] }
+    - { role: luks-move-keyfiles, tags: ['encrypt'] }
+
+- name: Install base system
+  connection: chroot
+  hosts: chroot
+  vars_files:
+    - "host_vars/{{ machine_aliases[ansible_product_name] }}"
+  vars_prompt:
+    - name: root_password
+      prompt: "root password:"
+      encrypt: "sha512_crypt"
+      private: yes
+      confirm: yes
+    - name: user_password
+      prompt: "user password:"
+      encrypt: "sha512_crypt"
+      private: yes
+      confirm: yes
+  roles:
+    - { role: base, tags: ['base'] }
+    - { role: user, tags: ['user'] }
+    - { role: aur, tags: ['aur'] }
+    - { role: dotfiles, tags: ['user'] }
+    - { role: locales, tags: ['locales'] }
+    - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
+    - { role: thinkpad, tags: ['thinkpad'], when: "'ThinkPad' in ansible_product_version" }
+    - { role: initramfs, tags: ['initramfs'] }
+    - { role: networkmanager, tags: ['networkmanager'] }
+    - { role: system_tools, tags: ['system_tools'] }
+    - { role: grub, tags: ['grub'] }
+
+- name: Finish installation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - "host_vars/{{ machine_aliases[ansible_product_name] }}"
+  tasks:
+    - name: unmount partitions with the new system
+      command: umount -Rf {{ arch_root }}
+
+    - name: unmount swap
+      command: swapoff -a
+
+    - name: close LUKS encrypted devices
+      luks_device:
+        device: "/dev/{{ item.volume_group }}/{{ item.name }}"
+        state: closed
+      loop: "{{ logical_volumes }}"
+
+    - name: close LUKS encrypted devices on raid
+      luks_device:
+        device: "/dev/md/{{ item.name }}"
+        state: closed
+      loop: "{{ mdadm_arrays }}"
+
+    # - name: reboot
+      # command: reboot

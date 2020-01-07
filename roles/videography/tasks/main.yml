@@ -1,0 +1,5 @@
+---
+- name: Install openshot
+  pacman:
+    name: openshot
+    state: present

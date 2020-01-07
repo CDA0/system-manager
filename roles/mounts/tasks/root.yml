@@ -1,0 +1,9 @@
+---
+- name: Mount root
+  mount:
+    path: "{{ arch_root }}{{ item.mountpoint }}"
+    src: "/dev/mapper/{{ item.mapper_name }}"
+    fstype: "{{ item.filesystem }}"
+    state: mounted
+  when: item.mountpoint is defined and ("/" == item.mountpoint)
+  loop: "{{ logical_volumes }}"

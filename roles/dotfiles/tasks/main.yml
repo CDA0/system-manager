@@ -1,0 +1,42 @@
+---
+- name: Install rcm
+  aur:
+    name: rcm
+    user: "{{ users[0].name }}"
+  tags:
+    - aur
+
+- name: Clone user dotfiles
+  git:
+    repo: "{{ item.dotfiles.url }}"
+    dest: "/home/{{ item.name }}/{{ item.dotfiles.destination }}"
+    accept_hostkey: yes
+    update: no
+  when: item.dotfiles is defined
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
+
+- name: Install user dotfiles
+  command: "rcup -d /home/{{ item.name}}/{{ item.dotfiles.destination}} {{ item.dotfiles.rcup_flags }}
+  "
+  when: item.dotfiles is defined
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
+
+- name: Install antigen
+  shell: "curl -L git.io/antigen > /home/{{ item.name }}/.antigen.zsh"
+  when: item.dotfiles is defined
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
+
+- name: Install plugins
+  command: "/bin/zsh -c 'source /home/{{ item.name }}/.zshrc; antigen reset'"
+  when: item.dotfiles is defined and item.shell is defined and 'zsh' in item.shell
+  become: yes
+  become_user: "{{ item.name }}"
+  changed_when: false
+  failed_when: false
+  loop: "{{ users }}"
