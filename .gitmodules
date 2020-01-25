@@ -1,6 +1,0 @@
-[submodule "library/ansible-aur"]
-	path = library/ansible-aur
-	url = https://github.com/pigmonkey/ansible-aur
-[submodule "ansible/library/ansible-aur"]
-	path = ansible/library/ansible-aur
-	url = https://github.com/pigmonkey/ansible-aur/
