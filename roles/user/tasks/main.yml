@@ -15,6 +15,7 @@
     shell: "{{ item.shell }}"
     uid: "{{ item.uid }}"
     update_password: on_create
+  when: user_password is defined
   loop: "{{ users }}"
 
 - name: Create user ssh dir

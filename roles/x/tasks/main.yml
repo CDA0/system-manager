@@ -45,3 +45,6 @@
     groups: video
     append: yes
   loop: "{{ users }}"
+
+- name: Set keyboard layout
+  shell: localectl set-x11-keymap gb

@@ -1,0 +1,60 @@
+---
+- include: tlp.yml
+
+- name: Configure power button
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#HandlePowerKey='
+    line: 'HandlePowerKey=suspend'
+
+- name: Configure lid switch
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#HandleLidSwitch='
+    line: 'HandleLidSwitch=hibernate'
+
+- name: Lock on suspend
+  copy:
+    src: suspend-lock.service
+    dest: /etc/systemd/system/suspend-lock@.service
+  
+- name: Lock on hibernate
+  copy:
+    src: hibernate-lock.service
+    dest: /etc/systemd/system/hibernate-lock@.service
+  
+- name: Enable suspend lock
+  systemd:
+    name: "suspend-lock@{{ item.name }}"
+    enabled: yes
+  loop: "{{ users }}"
+
+- name: Enable hibernate lock
+  systemd:
+    name: "hibernate-lock@{{ item.name }}"
+    enabled: yes
+  loop: "{{ users }}"
+
+- name: Install powertop
+  pacman:
+    name: powertop
+    state: present
+
+- name: Install powerstat
+  become: yes
+  become_user: aurman
+  aur:
+    name: powerstat-git
+
+# - name: Install battery-stats
+  # become: yes
+  # become_user: aurman
+  # aur:
+    # name: battery-stats-git
+
+- name: Install battop
+  become: yes
+  become_user: aurman
+  aur:
+    name: battop
+

@@ -3,7 +3,7 @@
   pacman: name=hdparm state=present
 
 - name: Check for TRIM support
-  shell: "hdparm -I /dev/sda | grep TRIM"
+  shell: "hdparm -I {{ sata_drives[0].device }} | grep TRIM"
   register: hdparm
   ignore_errors: True
 

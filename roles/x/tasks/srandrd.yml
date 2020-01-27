@@ -1,5 +1,7 @@
 ---
 - name: Install srandrd
+  become: yes
+  become_user: aurman
   aur:
-    user: "{{ user[0].name }}"
     name: srandrd
+    skip_installed: yes

@@ -1,0 +1,76 @@
+---
+- name: Install gnupg
+  pacman:
+    name:
+      - pinentry
+      - gnupg
+    state: present
+
+- name: Set ssh sock
+  lineinfile:
+    path: "/home/{{ item.name }}/.pam_environment"
+    regexp: '^SSH_AUTH_SOCK'
+    line: 'SSH_AUTH_SOCK    DEFAULT="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"'
+    create: yes
+  loop: "{{ users }}"
+
+- name: configure gnupg default cache for ssh
+  lineinfile:
+    path: "/home/{{ item.name }}/.gnupg/gpg-agent.conf"
+    regexp: '^default-cache-ttl-ssh'
+    line: "default-cache-ttl-ssh 60480000"
+    create: yes
+  loop: "{{ users }}"
+
+- name: configure gnupg max cache for ssh
+  lineinfile:
+    path: "/home/{{ item.name }}/.gnupg/gpg-agent.conf"
+    regexp: '^max-cache-ttl-ssh'
+    line: "max-cache-ttl-ssh 60480000"
+    create: yes
+  loop: "{{ users }}"
+
+- name: Enable gpg-agent
+  systemd:
+    name: gpg-agent.socket
+    scope: user
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+  loop: "{{ users }}"
+
+- name: Enable dirmngr
+  systemd:
+    name: dirmngr.socket
+    scope: user
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+  loop: "{{ users }}"
+
+- name: Enable gpg-agent-ssh
+  systemd:
+    name: gpg-agent-ssh.socket
+    scope: user
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
+  loop: "{{ users }}"
+
+- name: Set ssh PID
+  lineinfile:
+    path: "/home/{{ item.name }}/.pam_environment"
+    regexp: '^SSH_AGENT_PID'
+    line: 'SSH_AGENT_PID    DEFAULT='
+    create: yes
+  loop: "{{ users }}"
+

@@ -4,8 +4,8 @@
     name: reflector
     state: present
 
-- name: Configure repository mirrors
-  command: "reflector --sort rate --completion-percent 98 -p https --country '{{ country }}' --save /etc/pacman.d/mirrorlist"
+#- name: Configure repository mirrors
+#  command: "reflector --sort rate --completion-percent 98 -p https --country '{{ country }}' --save /etc/pacman.d/mirrorlist"
 
 - name: Upgrade system to latest state
   pacman:

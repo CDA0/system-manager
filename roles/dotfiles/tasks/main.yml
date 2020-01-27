@@ -1,10 +1,10 @@
 ---
 - name: Install rcm
+  become: yes
+  become_user: aurman
   aur:
     name: rcm
-    user: "{{ users[0].name }}"
-  tags:
-    - aur
+    skip_installed: yes
 
 - name: Clone user dotfiles
   git:
@@ -40,3 +40,11 @@
   changed_when: false
   failed_when: false
   loop: "{{ users }}"
+
+- name: Post install commands
+  command: "/bin/zsh -c 'source /home/{{ users[0].name }}/.zshrc; {{ item }}'"
+  become: yes
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+  failed_when: false
+  loop: "{{ users[0].dotfiles.post_install_cmds }}"

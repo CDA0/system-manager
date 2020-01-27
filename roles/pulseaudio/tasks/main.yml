@@ -12,13 +12,17 @@
 - name: Install pavucontrol
   pacman:
     name: pavucontrol
-    state: preset
+    state: present
 
 - name: Enable at login
   systemd:
     scope: user
     name: pulseaudio
     enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
 
 - name: Install pulseaudio panel for xfce
   pacman:

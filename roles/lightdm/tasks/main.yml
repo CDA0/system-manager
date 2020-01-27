@@ -4,16 +4,40 @@
     name: lightdm
     state: present
 
-- name: Install lightdm slick greeter
+- name: Install lightdm greeter
+  become: yes
+  become_user: aurman
   aur:
-    name: lightdm-slick-greeter
-    user: "{{ user[0].name }}"
+    name: "{{ lightdm_greeter }}"
+    skip_installed: yes
 
-- name: Enable greeter
+- name: Set greeter
   lineinfile:
     path: /etc/lightdm/lightdm.conf
-    regexp: '^greeter='
-    line: greeter=lightdm-click-greeter
+    regexp: '^#greeter-session='
+    line: greeter-session={{ lightdm_greeter }}
+    state: present
+
+- name: Create backgound dir
+  file: path=/usr/share/backgrounds state=directory
+
+- name: Push background
+  copy: src=thinkpad.jpg dest=/usr/share/backgrounds
+
+- name: Create slick greeter config
+  lineinfile:
+    path: /etc/lightdm/slick-greeter.conf
+    regexp: '^[Greeter]'
+    line: "[Greeter]"
+    create: yes
+    state: present
+
+- name: Set background
+  lineinfile:
+    path: /etc/lightdm/slick-greeter.conf
+    regexp: '^background='
+    line: "background=/usr/share/backgrounds/thinkpad.jpg"
+    state: present
 
 - name: Enable lightdm
   systemd:

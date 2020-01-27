@@ -43,8 +43,8 @@
     state: present
 
 - name: Install AUR fonts
+  become: yes
+  become_user: aurman
   aur:
     name: "{{ aur_fonts }}"
-    user: "{{ user.name }}"
-  tags:
-    - aur
+    skip_installed: yes

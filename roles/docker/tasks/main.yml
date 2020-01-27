@@ -1,8 +1,10 @@
 ---
 - name: Install docker rootless
+  become: yes
+  become_user: aurman
   aur:
     name: docker-rootless
-    user: "{{ users[0].name }}"
+    skip_installed: yes
 
 - name: Configure kernel
   lineinfile:

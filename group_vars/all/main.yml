@@ -32,8 +32,21 @@ users:
       url: https://gitlab.com/cda0/dotfiles
       destination: .dotfiles
       rcup_flags: -fx README.md
+      post_install_cmds:
+        - goenv install 1.13.6
+        - goenv global 1.13.6
+        - pyenv install 3.8.1
+        - pyenv virtualenv 3.8.1 neovim
+        - pyenv activate neovim && pip install user neovim
+        - nvm install v13
+        - npm install -g neovim
+        - rbenv install 2.7.0
+        - rbenv global 2.7.0
+        - gem install neovim
 
 bootloader: grub
+
+lightdm_greeter: lightdm-slick-greeter
 
 passwordless_sudo: []
 
@@ -66,7 +79,9 @@ system_tools:
   - arch-wiki-lite
   - arch-wiki-docs
   - fzf
+  - hwinfo
   - git
+  - glances
   - exa
   - neofetch
   - neovim
@@ -94,3 +109,29 @@ initramfs_hooks:
 
 aur:
   dir: aur
+
+base_fonts:
+    - cantarell-fonts
+    - gsfonts
+    - noto-fonts
+    - terminus-font
+    - tex-gyre-fonts
+    - ttf-caladea
+    - ttf-carlito
+    - ttf-dejavu
+    - ttf-droid
+    - ttf-inconsolata
+    - ttf-liberation
+    - ttf-opensans
+    - ttf-ubuntu-font-family
+
+aur_fonts:
+    - ttf-courier-prime
+    - ttf-heuristica
+    - ttf-merriweather
+    - ttf-merriweather-sans
+    - ttf-oswald
+    - ttf-quintessential
+    - ttf-signika
+    - powerline-fonts-git
+    - nerd-fonts-git

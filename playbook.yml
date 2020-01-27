@@ -6,6 +6,27 @@
   vars_files:
     - "host_vars/{{ machine_aliases[ansible_product_name] }}"
   roles:
-    - { role: tlp, tags: ['tlp'] }
+    - { role: base, tags: ['base'] }
+    - { role: aur, tags: ['aur'] }
+    - { role: user, tags: ['user'] }
+    - { role: dotfiles, tags: ['dotfiles'] }
+    - { role: networkmanager, tags: ['networkmanager'] }
+    - { role: system_tools, tags: ['system_tools'] }
+    - { role: pacman, tags: ['pacman'] }
+    - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
+    - { role: ssd, tags: ['ssd'] }
+    - { role: thinkpad, tags: ['thinkpad'], when: "'ThinkPad' in ansible_product_version" }
+    - { role: gnupg, tags: ['gnupg'] }
+    - { role: laptop, tags: ['laptop'] }
+    - { role: pulseaudio, tags: ['pulseaudio'] }
+    - { role: x, tags: ['x'] }
+    - { role: bspwm, tags: ['bspwm'] }
+    - { role: lightdm, tags: ['lightdm'] } 
+    - { role: fonts, tags: ['fonts'] }
+    - { role: browsers, tags: ['browsers'] }
     - { role: docker, tags: ['docker'] }
+    - { role: rofi, tags: ['rofi'] }
+    - { role: lastpass, tags: ['lastpass'] }
+    - { role: photography, tags: ['photography'] }
+    - { role: videography, tags: ['videography'] }
 

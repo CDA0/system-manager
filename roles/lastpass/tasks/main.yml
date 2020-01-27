@@ -1,0 +1,6 @@
+---
+- name: Install lastpass cli
+  pacman:
+    name: lastpass-cli
+    state: present
+

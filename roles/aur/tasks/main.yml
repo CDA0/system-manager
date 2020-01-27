@@ -1,6 +1,24 @@
 ---
+- name: Create aur user
+  user:
+    name: aurman
+    comment: "AUR manager"
+    shell: /bin/nologin
+    home: /var/lib/aurman
+    system: yes
+
+- name: Add user to sudoers
+  lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    regexp: '^aurman'
+    line: 'aurman ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    create: yes
+    validate: 'visudo -cf %s'
+
 - name: Install yay
+  become: yes
+  become_user: aurman
   aur:
-    user: "{{ users[0].name }}"
     name: yay
-    skip_pgp: yes
+    skip_pgp_check: yes
+    skip_installed: yes

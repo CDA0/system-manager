@@ -10,7 +10,6 @@ desktop: xfce
 x_drivers:
   - xf86-input-synaptics
   - mesa
-  - intel-hybrid-codec-driver
   - vulkan-intel
 
 kernel_cmdline: 'acpi_osi= i915 modeset=1'

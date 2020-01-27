@@ -1,0 +1,12 @@
+---
+- name: Install pacaudit
+  become: yes
+  become_user: aurman
+  aur:
+    name: pacaudit
+
+- name: Install informant
+  become: yes
+  become_user: aurman
+  aur:
+    name: informant

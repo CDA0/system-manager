@@ -1,0 +1,16 @@
+---
+- name: Install bspwm
+  pacman:
+    name:
+      - bspwm
+      - picom
+      - feh
+      - slock
+    state: present
+
+- name: Install polybar
+  become: yes
+  become_user: aurman
+  aur:
+    name: polybar
+
