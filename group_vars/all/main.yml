@@ -78,6 +78,7 @@ base_packages:
 system_tools:
   - arch-wiki-lite
   - arch-wiki-docs
+  - fd
   - fzf
   - hwinfo
   - git
@@ -89,6 +90,7 @@ system_tools:
   - ranger
   - ripgrep
   - tmux
+  - yad
 
 initramfs_hooks:
   - base

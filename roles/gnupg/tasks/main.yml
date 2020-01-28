@@ -6,6 +6,14 @@
       - gnupg
     state: present
 
+- name: Set ssh PID
+  lineinfile:
+    path: "/home/{{ item.name }}/.pam_environment"
+    regexp: '^SSH_AGENT_PID'
+    line: 'SSH_AGENT_PID    DEFAULT='
+    create: yes
+  loop: "{{ users }}"
+
 - name: Set ssh sock
   lineinfile:
     path: "/home/{{ item.name }}/.pam_environment"
@@ -64,13 +72,5 @@
   become_user: "{{ item.name }}"
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
-  loop: "{{ users }}"
-
-- name: Set ssh PID
-  lineinfile:
-    path: "/home/{{ item.name }}/.pam_environment"
-    regexp: '^SSH_AGENT_PID'
-    line: 'SSH_AGENT_PID    DEFAULT='
-    create: yes
   loop: "{{ users }}"
 
