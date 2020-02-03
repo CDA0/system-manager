@@ -1,0 +1,36 @@
+---
+- name: Install mpv
+  package: name=mpv state=present
+
+- name: Install mopidy and ncmpcpp
+  package:
+    name:
+      - mopidy
+      - ncmpcpp
+      - gnu-netcat
+    state: present
+
+- name: Install mopidy spotify
+  become: yes
+  become_user: aurman
+  aur:
+    name:
+      - mopidy-spotify
+      - mopidy-mpd
+
+
+- name: Push service file
+  copy:
+    src: mopidy.service
+    dest: /etc/systemd/user/mopidy.service
+
+- name: Start and enable mopidy.service
+  systemd:
+    scope: user
+    name: mopidy.service
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ item.name }}"
+  loop: "{{ users }}"
+

@@ -20,5 +20,3 @@
       - numix-circle-icon-theme-git
     skip_installed: yes
     
-
-- include: shells.yml

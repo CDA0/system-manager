@@ -48,3 +48,7 @@
 
 - name: Set keyboard layout
   shell: localectl set-x11-keymap gb
+
+- include: shells.yml
+- include: autorandr.yml
+- include: srandrd.yml

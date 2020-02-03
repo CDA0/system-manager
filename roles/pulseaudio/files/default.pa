@@ -1,0 +1,8 @@
+#/usr/bin/pulseaudio -nF
+# Managed by ansible
+
+.include /etc/pulse/default.pa
+
+load-module module-native-protocol-tcp
+# automatically switch to newly connected devices
+load-module module-switch-on-connect

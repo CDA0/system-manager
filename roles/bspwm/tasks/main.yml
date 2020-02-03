@@ -3,9 +3,11 @@
   pacman:
     name:
       - bspwm
+      - dunst
       - picom
       - feh
       - slock
+      - yad
     state: present
 
 - name: Install polybar

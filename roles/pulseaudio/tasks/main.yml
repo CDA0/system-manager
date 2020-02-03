@@ -14,6 +14,14 @@
     name: pavucontrol
     state: present
 
+- name: Install tools for bluetooth
+  pacman:
+    name:
+      - pulseaudio-alsa
+      - pulseaudio-bluetooth
+      - bluez-utils
+    state: present
+
 - name: Enable at login
   systemd:
     scope: user
@@ -30,3 +38,21 @@
     state: present
   when: "'xfce' in desktop"
 
+- name: Push default.pa
+  copy:
+    src: default.pa
+    dest: "/home/{{ item.name }}/.config/pulse/default.pa"
+  loop: "{{ users }}"
+
+- name: Enable bluetooth at bluetooth
+  ini_file:
+    path: /etc/bluetooth/main.conf
+    section: Policy
+    option: AutoEnable
+    value: true
+
+- name: Start bluetooth
+  systemd:
+    name: bluetooth.service
+    enabled: yes
+    state: started

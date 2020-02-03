@@ -1,0 +1,38 @@
+---
+- name: Install weechat
+  pacman:
+    name:
+      - weechat
+      - python-websocket-client
+    state: present
+
+- name: Create weechat directories
+  become: yes
+  become_user: "{{ item.name }}"
+  file:
+    path: /home/{{ item.name }}/.weechat/python/autoload
+    recurse: yes
+    state: directory
+  when: item.wee_slack is defined and item.wee_slack
+  loop: "{{ users }}"
+
+- name: Download weechat slack plugin
+  become: yes
+  become_user: "{{ item.name }}"
+  get_url:
+    url: https://raw.githubusercontent.com/wee-slack/wee-slack/master/wee_slack.py
+    dest: /home/{{ item.name }}/.weechat/python/wee_slack.py
+    mode: 0644
+  when: item.wee_slack is defined and item.wee_slack
+  loop: "{{ users }}"
+
+- name: Enable wee slack
+  become: yes
+  become_user: "{{ item.name }}"
+  file:
+    src: /home/{{ item.name }}/.weechat/python/wee_slack.py
+    dest: /home/{{ item.name }}/.weechat/python/autoload/wee_slack.py
+    state: link
+  when: item.wee_slack is defined and item.wee_slack
+  loop: "{{ users }}"
+

@@ -1,0 +1,36 @@
+---
+- name: Install CUPS ad drivers
+  package:
+    name:
+      - ghostscript
+      - gsfonts
+      - cups
+      - cups-pdf
+      - gutenprint
+      - hplip
+    state: present
+
+- name: Add print admin group
+  group:
+    name: printadmin
+    state: present
+
+- name: Allow printadmin group to admin cups
+  lineinfile:
+    dest: /etc/cups/cups-files.conf
+    regexp: '^SystemGroup'
+    line: 'SystemGroup sys root printadmin'
+    state: present
+
+- name: Add users to cups
+  user:
+    name: "{{ item.name }}"
+    groups: printadmin,lp
+    append: yes
+  loop: "{{ users }}"
+
+- name: Start and enable CUPS
+  systemd:
+    name: org.cups.cupsd.service
+    enabled: yes
+    state: started

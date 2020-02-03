@@ -47,10 +47,3 @@
   become: yes
   become_user: "{{ item.name }}"
   loop: "{{ users }}"
-
-- name: Set environment
-  lineinfile:
-    path: "/home/{{ item.name }}/.zshrc"
-    regexp: '^export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
-    line: 'export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock'
-  loop: "{{ users }}"

@@ -1,0 +1,19 @@
+---
+- name: Install firejail
+  pacman:
+    name: firejail
+    state: present
+
+- name: Ensure hooks dir exists
+  file:
+    path: /etc/pacman.d/hooks
+    state: directory
+
+- name: Install firejail hook
+  copy:
+    src: firejail.hook
+    dest: /etc/pacman.d/hooks/firejail.hook
+
+- name: Configure firejail for all apps
+  command: firecfg
+

@@ -1,0 +1,8 @@
+---
+- name: Install shells
+  pacman:
+    name:
+      - alacritty
+      - kitty
+      - rxvt-unicode
+    state: present

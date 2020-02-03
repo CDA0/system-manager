@@ -43,6 +43,10 @@ users:
         - rbenv install 2.7.0
         - rbenv global 2.7.0
         - gem install neovim
+    wee_slack: true
+
+udisks:
+  shared_mount: false
 
 bootloader: grub
 
@@ -78,6 +82,7 @@ base_packages:
 system_tools:
   - arch-wiki-lite
   - arch-wiki-docs
+  - ctags
   - fd
   - fzf
   - hwinfo
@@ -87,10 +92,8 @@ system_tools:
   - neofetch
   - neovim
   - openssh
-  - ranger
   - ripgrep
   - tmux
-  - yad
 
 initramfs_hooks:
   - base
@@ -136,4 +139,6 @@ aur_fonts:
     - ttf-quintessential
     - ttf-signika
     - powerline-fonts-git
-    - nerd-fonts-git
+    - nerd-fonts-source-code-pro
+    - nerd-fonts-dejavu-complete
+    - nerd-fonts-complete

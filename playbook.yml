@@ -29,4 +29,11 @@
     - { role: lastpass, tags: ['lastpass'] }
     - { role: photography, tags: ['photography'] }
     - { role: videography, tags: ['videography'] }
+    - { role: weechat, tags: ['weechat'] }
+    - { role: ranger, tags: ['ranger'] }
+    - { role: firejail, tags: ['firejail'] }
+    - { role: git-annex, tags: ['git-annex'] }
+    - { role: udisks, tags: ['udisks'] }
+    - { role: cups, tags: ['cups'] }
+    - { role: media, tags: ['media'] }
 
