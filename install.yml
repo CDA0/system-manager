@@ -7,18 +7,18 @@
     - "host_vars/{{ machine_aliases[ansible_product_name] }}"
   vars_prompt:
     - name: luks_passphrase
-      prompt: "encryption passphrase:"
+      prompt: "encryption passphrase (blank for no encryption):"
       private: yes
       confirm: yes
   roles:
     - { role: partition, tags: ['partition'] }
-    - { role: lvm, tags: ['lvm'] }
-    - { role: mdadm, tags: ['mdadm'] }
-    - { role: encrypt, tags: ['encrypt'] }
+    - { role: lvm, tags: ['lvm'], when: logical_volumes is defined }
+    - { role: mdadm, tags: ['mdadm'], when: mdadm_arrays is defined }
+    - { role: encrypt, tags: ['encrypt'], when: luks_passphrase != '' }
     - { role: filesystems, tags: ['filesystems'] }
     - { role: mounts, tags: ['mounts'] }
     - { role: "arch-bootstrap", tags: ['bootstrap'] }
-    - { role: luks-move-keyfiles, tags: ['encrypt'] }
+    - { role: luks-move-keyfiles, tags: ['encrypt'], when: luks_passphrase != '' }
 
 - name: Install base system
   connection: chroot
@@ -45,9 +45,10 @@
     - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
     - { role: thinkpad, tags: ['thinkpad'], when: "'ThinkPad' in ansible_product_version" }
     - { role: initramfs, tags: ['initramfs'] }
-    - { role: networkmanager, tags: ['networkmanager'] }
+    - { role: networkmanager, tags: ['networkmanager'], when: static_ip is not defined }
     - { role: system_tools, tags: ['system_tools'] }
-    - { role: grub, tags: ['grub'] }
+    - { role: grub, tags: ['grub'], when: bootloader == 'grub' }
+    - { role: syslinux, tags: ['syslinux'], when: bootloader == 'syslinux' }
 
 - name: Finish installation
   hosts: localhost
@@ -65,12 +66,14 @@
       luks_device:
         device: "/dev/{{ item.volume_group }}/{{ item.name }}"
         state: closed
+      when: logical_volumes is defined
       loop: "{{ logical_volumes }}"
 
     - name: close LUKS encrypted devices on raid
       luks_device:
         device: "/dev/md/{{ item.name }}"
         state: closed
+      when: mdadm_arrays is defined
       loop: "{{ mdadm_arrays }}"
 
     # - name: reboot

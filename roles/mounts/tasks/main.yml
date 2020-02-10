@@ -7,6 +7,7 @@
     src: "{{ item.0.device }}-part{{ item.1.number }}"
     fstype: "{{ item.1.filesystem }}"
     state: mounted
+    opts: "{{ item.1.mount_opts|default(omit) }}"
   when: item.1.mountpoint is defined and "/" != item.1.mountpoint
   with_subelements:
     - "{{ sata_drives }}"
@@ -17,8 +18,19 @@
     path: "{{ arch_root }}{{ item.mountpoint }}"
     src: "/dev/mapper/{{ item.mapper_name }}"
     fstype: "{{ item.filesystem }}"
+    opts: "{{ item.mount_opts|default(omit) }}"
     state: mounted
-  when: item.mountpoint is defined and "/" != item.mountpoint
+  when: item.mountpoint is defined and "/" != item.mountpoint and item.encrypt is defined and item.encrypt
+  loop: "{{ logical_volumes }}"
+
+- name: Mount lvm filesystems
+  mount:
+    path: "{{ arch_root }}{{ item.mountpoint }}"
+    src: "/dev/{{ item.volume_group }}/{{ item.name }}"
+    fstype: "{{ item.filesystem }}"
+    opts: "{{ item.mount_opts|default(omit) }}"
+    state: mounted
+  when: item.mountpoint is defined and "/" != item.mountpoint and item.encrypt is not defined
   loop: "{{ logical_volumes }}"
 
 - name: Mount raid
@@ -26,5 +38,7 @@
     path: "{{ arch_root }}{{ item.mountpoint }}"
     src: "/dev/mapper/{{ item.mapper_name }}"
     fstype: "{{ item.filesystem }}"
+    opts: "{{ item.mount_opts|default(omit) }}"
     state: mounted
+  when: mdadm_arrays is defined
   loop: "{{ mdadm_arrays }}"

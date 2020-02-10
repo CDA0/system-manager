@@ -5,12 +5,18 @@ consolefont: Lat2-Terminus16
 
 bootloader: grub
 
-desktop: xfce
+desktop: bspwm
 
 x_drivers:
   - xf86-input-synaptics
   - mesa
   - vulkan-intel
+
+extra_packages:
+  - dhcpcd
+  - net-tools
+  - wireless_tools
+  - wpa_supplicant
 
 kernel_cmdline: 'acpi_osi= i915 modeset=1'
 

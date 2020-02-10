@@ -4,6 +4,7 @@
 
 - name: Check for TRIM support
   shell: "hdparm -I {{ sata_drives[0].device }} | grep TRIM"
+  when: "'ata' in sata_drives[0].device"
   register: hdparm
   ignore_errors: True
 

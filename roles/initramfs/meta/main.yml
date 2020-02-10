@@ -1,3 +1,4 @@
 ---
 dependencies:
-  - { role: grub }
+  - { role: grub, when: "'grub' in bootloader" }
+  - { role: syslinux, when: "'syslinux' in bootloader" }

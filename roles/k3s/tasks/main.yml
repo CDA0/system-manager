@@ -1,0 +1,47 @@
+---
+- name: Get latest version
+  shell: curl https://github.com/rancher/k3s/releases/latest -L -s -H "Accept: application/json" | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/'
+  register: k3s_latest_version
+
+- name: Download latest version
+  get_url:
+    src: "https://github.com/ranchers/k3s/releases/download/{{ k3s_latest_version }}/k3s"
+    dest: /usr/bin/k3s
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Push service file
+  copy:
+    src: k3s.service
+    dest: /etc/systemd/system/k3s.service
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Start service
+  systemd:
+    name: k3s.service
+    daemon_reload: yes
+    state: started
+    enabled: yes
+
+- name: Copy config file to user home directory
+  copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/{{ item.name }}/.kube/config
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  loop: "{{ users }}"
+
+- name: Create kubectl symlink
+  file:
+    src: /usr/bin/k3s
+    dest: /usr/bin/kubectl
+    state: link
+
+- name: Create crictl symlink
+  file:
+    src: /usr/bin/k3s
+    dest: /usr/bin/crictl
+    state: link

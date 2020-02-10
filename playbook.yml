@@ -10,30 +10,30 @@
     - { role: aur, tags: ['aur'] }
     - { role: user, tags: ['user'] }
     - { role: dotfiles, tags: ['dotfiles'] }
-    - { role: networkmanager, tags: ['networkmanager'] }
+    - { role: networkmanager, tags: ['networkmanager'], when: static_ip is not defined }
     - { role: system_tools, tags: ['system_tools'] }
     - { role: pacman, tags: ['pacman'] }
     - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
     - { role: ssd, tags: ['ssd'] }
     - { role: thinkpad, tags: ['thinkpad'], when: "'ThinkPad' in ansible_product_version" }
     - { role: gnupg, tags: ['gnupg'] }
-    - { role: laptop, tags: ['laptop'] }
-    - { role: pulseaudio, tags: ['pulseaudio'] }
-    - { role: x, tags: ['x'] }
-    - { role: bspwm, tags: ['bspwm'] }
-    - { role: lightdm, tags: ['lightdm'] } 
-    - { role: fonts, tags: ['fonts'] }
-    - { role: browsers, tags: ['browsers'] }
+    - { role: laptop, tags: ['laptop'], when: "'ThinkPad' in ansible_product_version" }
+    - { role: pulseaudio, tags: ['pulseaudio'], when: desktop is defined }
+    - { role: x, tags: ['x'], when: desktop is defined }
+    - { role: bspwm, tags: ['bspwm'], when: desktop is defined }
+    - { role: lightdm, tags: ['lightdm'], when: desktop is defined }
+    - { role: fonts, tags: ['fonts'], when: desktop is defined }
+    - { role: browsers, tags: ['browsers'], when: desktop is defined }
     - { role: docker, tags: ['docker'] }
-    - { role: rofi, tags: ['rofi'] }
-    - { role: lastpass, tags: ['lastpass'] }
-    - { role: photography, tags: ['photography'] }
-    - { role: videography, tags: ['videography'] }
-    - { role: weechat, tags: ['weechat'] }
-    - { role: ranger, tags: ['ranger'] }
-    - { role: firejail, tags: ['firejail'] }
+    - { role: rofi, tags: ['rofi'], when: desktop is defined }
+    - { role: lastpass, tags: ['lastpass'], when: desktop is defined }
+    - { role: photography, tags: ['photography'], when: desktop is defined }
+    - { role: videography, tags: ['videography'], when: desktop is defined }
+    - { role: weechat, tags: ['weechat'], when: desktop is defined }
+    - { role: ranger, tags: ['ranger'], when: desktop is defined }
+    - { role: firejail, tags: ['firejail'], when: desktop is defined }
     - { role: git-annex, tags: ['git-annex'] }
-    - { role: udisks, tags: ['udisks'] }
-    - { role: cups, tags: ['cups'] }
-    - { role: media, tags: ['media'] }
+    - { role: udisks, tags: ['udisks'], when: desktop is defined }
+    - { role: cups, tags: ['cups'], when: desktop is defined }
+    - { role: media, tags: ['media'], when: desktop is defined }
 

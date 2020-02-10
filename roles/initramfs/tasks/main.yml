@@ -4,7 +4,7 @@
     src: hook-openswap.j2
     dest: /etc/initcpio/hooks/openswap
     mode: 700
-  when: item.filesystem is defined and item.filesystem == "swap"
+  when: logical_volumes is defined and item.filesystem is defined and item.filesystem == "swap"
   loop: "{{ logical_volumes }}"
 
 - name: Install hook
@@ -12,7 +12,7 @@
     src: install-openswap.j2
     dest: /etc/initcpio/install/openswap
     mode: 700
-  when: item.filesystem is defined and item.filesystem == "swap"
+  when: logical_volumes is defined and item.filesystem is defined and item.filesystem == "swap"
   loop: "{{ logical_volumes }}"
 
 - name: configure initramfs build hooks
@@ -26,11 +26,13 @@
     path: /etc/mkinitcpio.conf
     regexp: '^FILES='
     line: "FILES=({{ luks_keys_location }}/cryptroot.keyfile)"
+  when: logical_volumes is defined
 
 - name: rebuild initramfs
   command: mkinitcpio -p linux
   notify:
     - rebuild grub
+  when: "'grub'in bootloader"
 
 - name: restrict access permissions to initramfs
   file:

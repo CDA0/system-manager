@@ -11,3 +11,8 @@
   pacman:
     name: "{{ base_packages }}"
     state: present
+
+- name: Install extra packages
+  pacman:
+    name: "{{ extra_packages }}"
+  when: extra_packages is defined

@@ -5,7 +5,7 @@
     device: "{{ item.0.device }}"
     # Parted indexes partitions starting from 1:
     number: "{{ item.1.number }}"
-    name: "{{ item.1.name }}"
+    name: "{{ item.1.name|default(omit) }}"
     part_start: "{{ item.1.start }}"
     part_end: "{{ item.1.end }}"
     part_type: "{{ item.1.type|default(omit) }}"
