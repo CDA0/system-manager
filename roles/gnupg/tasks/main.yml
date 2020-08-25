@@ -66,3 +66,5 @@
     XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
   loop: "{{ users }}"
 
+# If using SSH Auth add the keygrip to ~/.gnupg/sshcontrol with:
+# gpg --list-keys --with-keygrip | grep -A 1 '\[A\]' | awk '{ getline; print $3 }'
