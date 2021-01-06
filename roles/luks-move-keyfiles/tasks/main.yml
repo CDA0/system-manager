@@ -48,7 +48,7 @@
     path: "{{ arch_root }}/etc/crypttab"
     opts: "{{ item.cryptopts | default(omit) }}"
     password: "{{ luks_keys_location }}/{{ item.name }}.keyfile"
-  when: (item.keyfile is defined and item.keyfile and item.mountpoint is defined and item.mountpoint != "/") or item.filesystem == "swap"
+  when: item.keyfile is defined and item.keyfile
   loop: "{{ mdadm_arrays }}"
 
 
