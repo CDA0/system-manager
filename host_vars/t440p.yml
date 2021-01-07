@@ -20,6 +20,8 @@ extra_packages:
 
 kernel_cmdline: 'acpi_osi= i915 modeset=1'
 
+root_device: ata-TS120GMTS420S_F586330108-part3
+
 sata_drives:
   - device: /dev/disk/by-id/ata-TS120GMTS420S_F586330108
     table: gpt
