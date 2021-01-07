@@ -13,10 +13,10 @@
   aur:
     name:
       - numix-square-icon-theme-git
-      - numix-themes-archblue
-      - numix-icon-theme-git
-      - numix-square-icon-theme
-      - numix-circle-arc-icons-git
-      - numix-circle-icon-theme-git
-    skip_installed: yes
+      # - numix-themes-archblue
+      # - numix-icon-theme-git
+      # - numix-square-icon-theme
+      # - numix-circle-arc-icons-git
+      # - numix-circle-icon-theme-git
+    state: present
     

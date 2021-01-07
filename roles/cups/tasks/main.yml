@@ -24,13 +24,12 @@
 
 - name: Add users to cups
   user:
-    name: "{{ item.name }}"
+    name: "{{ user.name }}"
     groups: printadmin,lp
     append: yes
-  loop: "{{ users }}"
 
 - name: Start and enable CUPS
   systemd:
-    name: org.cups.cupsd.service
+    name: cups.socket
     enabled: yes
     state: started

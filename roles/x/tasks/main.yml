@@ -41,10 +41,9 @@
 
 - name: Add user to video group
   user:
-    name: "{{ item.name }}"
+    name: "{{ user.name }}"
     groups: video
     append: yes
-  loop: "{{ users }}"
 
 - name: Set keyboard layout
   shell: localectl set-x11-keymap gb

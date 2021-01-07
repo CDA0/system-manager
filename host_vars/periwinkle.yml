@@ -1,0 +1,77 @@
+hostname: periwinkle
+
+keymap: uk
+consolefont: Lat2-Terminus16
+
+bootloader: grub
+
+desktop: bspwm
+
+x_drivers:
+
+extra_packages:
+
+kernel_cmdline:
+
+sata_drives:
+  - device: ata-OCZ-VERTEX4_OCZ-2193L1V5Z0F5JE34
+    ssd: true
+    table: gpt
+    partitions:
+      - name: bios
+        number: 1
+        start: 0%
+        end: 1MiB
+        flags: [bios_grub]
+
+      - name: efi
+        number: 2
+        start: 1MiB
+        end: 512MiB
+        flags: [esp]
+        filesystem: vfat
+        mountpoint: /efi
+
+      - name: root
+        number: 3
+        start: 512MiB
+        end: 100%
+        flags: [lvm]
+        encrypt: true
+
+volume_groups:
+  - name: cryptlvm
+    pvs:
+      - ata-TS120GMTS420S_F586330108-part3
+
+logical_volumes:
+  - name: vg0-root
+    volume_group: vgroot
+    mapper_name: root
+    size: 32G
+    filesystem: ext4
+    mountpoint: /
+    encrypt: true
+    use_passphrase: true
+    keyfile: true
+
+  - name: cryptswap
+    volume_group: vgroot
+    mapper_name: swap
+    size: 20G
+    filesystem: swap
+    encrypt: true
+    use_passphrase: true
+    keyfile: true
+
+  - name: crypthome
+    volume_group: vgroot
+    mapper_name: home
+    size: 100%FREE
+    keyfile: true
+    filesystem: ext4
+    mountpoint: /home
+    encrypt: true
+    use_passphrase: true
+    shrink: no
+

@@ -1,5 +1,5 @@
 ---
-- name: Configure Arch 
+- name: Configure Arch
   hosts: hosts
   connection: local
   become: yes
@@ -13,7 +13,7 @@
     - { role: networkmanager, tags: ['networkmanager'], when: static_ip is not defined }
     - { role: system_tools, tags: ['system_tools'] }
     - { role: pacman, tags: ['pacman'] }
-    - { role: microcode, tags: ['microcode'], when: "'GenuineIntel' in ansible_processor" }
+    - { role: microcode, tags: ['microcode'] }
     - { role: ssd, tags: ['ssd'] }
     - { role: thinkpad, tags: ['thinkpad'], when: "'ThinkPad' in ansible_product_version" }
     - { role: gnupg, tags: ['gnupg'] }
@@ -21,19 +21,18 @@
     - { role: pulseaudio, tags: ['pulseaudio'], when: desktop is defined }
     - { role: x, tags: ['x'], when: desktop is defined }
     - { role: bspwm, tags: ['bspwm'], when: desktop is defined }
-    - { role: lightdm, tags: ['lightdm'], when: desktop is defined }
+    - { role: xfce, tags: ['xfce'], when: "'xfce' in desktop" }
+    - { role: sddm, tags: ['sddm'], when: desktop is defined }
     - { role: fonts, tags: ['fonts'], when: desktop is defined }
     - { role: browsers, tags: ['browsers'], when: desktop is defined }
-    - { role: docker, tags: ['docker'] }
-    - { role: rofi, tags: ['rofi'], when: desktop is defined }
-    - { role: lastpass, tags: ['lastpass'], when: desktop is defined }
+    - { role: podman, tags: ['podman'], when: desktop is defined }
+    - { role: dev-tools, tags: ['dev-tools'], when: desktop is defined }
     - { role: photography, tags: ['photography'], when: desktop is defined }
     - { role: videography, tags: ['videography'], when: desktop is defined }
-    - { role: weechat, tags: ['weechat'], when: desktop is defined }
+    - { role: communication, tags: ['communication'], when: desktop is defined }
     - { role: ranger, tags: ['ranger'], when: desktop is defined }
-    - { role: firejail, tags: ['firejail'], when: desktop is defined }
-    - { role: git-annex, tags: ['git-annex'] }
+    # # - { role: firejail, tags: ['firejail'], when: desktop is defined }
     - { role: udisks, tags: ['udisks'], when: desktop is defined }
     - { role: cups, tags: ['cups'], when: desktop is defined }
-    - { role: media, tags: ['media'], when: desktop is defined }
+    # - { role: media, tags: ['media'], when: desktop is defined }
 

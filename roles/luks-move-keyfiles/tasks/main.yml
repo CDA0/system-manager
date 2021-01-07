@@ -18,37 +18,14 @@
   with_fileglob:
     - "/*.keyfile"
 
-- name: Crypttab for non keyfiles
-  crypttab:
-    backing_device: "/dev/{{ item.volume_group }}/{{ item.name }}"
-    name: "/dev/mapper/{{ item.mapper_name }}"
-    state: present
-    path: "{{ arch_root }}/etc/crypttab"
-    opts: "{{ item.cryptopts | default(omit) }}"
-    password: "{{ item.volatile | ternary('/dev/random', omit) }}"
-  when: item.keyfile is not defined and (item.mountpoint is undefined or item.mountpoint != "/")
-  loop: "{{ logical_volumes }}"
-
-- name: Crypttab for keyfiles
-  crypttab:
-    backing_device: "/dev/{{ item.volume_group }}/{{ item.name }}"
-    name: "/dev/mapper/{{ item.mapper_name }}"
-    state: present
-    password: "{{ luks_keys_location }}/{{ item.name }}.keyfile"
-    path: "{{ arch_root }}/etc/crypttab"
-    opts: "{{ item.cryptopts | default(omit) }}"
-  when: (item.keyfile is defined and item.keyfile and item.mountpoint is defined and item.mountpoint != "/") or item.filesystem == "swap"
-  loop: "{{ logical_volumes }}"
-
 - name: Crypttab for raid
   crypttab:
     backing_device: "/dev/md/{{ item.name }}"
-    name: "/dev/mapper/{{ item.mapper_name }}"
+    name: "/dev/mapper/{{ item.name }}"
     state: present
     path: "{{ arch_root }}/etc/crypttab"
     opts: "{{ item.cryptopts | default(omit) }}"
     password: "{{ luks_keys_location }}/{{ item.name }}.keyfile"
   when: item.keyfile is defined and item.keyfile
   loop: "{{ mdadm_arrays }}"
-
 

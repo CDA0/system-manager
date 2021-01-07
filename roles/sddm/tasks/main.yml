@@ -1,0 +1,25 @@
+---
+- name: Install sddm
+  pacman:
+    name: sddm
+    state: present
+
+- name: Enable sddm
+  systemd:
+    name: sddm.service
+    enabled: yes
+
+- name: Ensures sddm config dir exists
+  file:
+    path: /etc/sddm.conf.d
+    state: directory
+
+- name: copy avatars config
+  copy:
+    src: avatars.conf
+    dest: /etc/sddm.conf.d/avatars.conf
+
+- name: copy users config
+  copy:
+    src: uid.conf
+    dest: /etc/sddm.conf.d/uid.conf

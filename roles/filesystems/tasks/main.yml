@@ -2,7 +2,7 @@
 - name: Create partition filesystems
   filesystem:
     fstype: "{{ item.1.filesystem }}"
-    dev: "{{ item.0.device }}-part{{ item.1.number }}"
+    dev: "/dev/disk/by-id/{{ item.0.device_id }}-part{{ item.1.number }}"
   when: item.1.filesystem is defined and item.1.filesystem != "swap"
   with_subelements:
     - "{{ sata_drives }}"
@@ -10,23 +10,11 @@
 
 - name: Create lvm filesystems
   filesystem:
-    fstype: "{{ item.filesystem }}"
-    dev: "/dev/{{ item.volume_group }}/{{ item.name }}"
-  when: item.filesystem is defined and item.filesystem != "swap" and item.encrypt is not defined
-  loop: "{{ logical_volumes }}"
-
-- name: Create lvm filesystems
-  filesystem:
-    fstype: "{{ item.filesystem }}"
-    dev: "/dev/mapper/{{ item.mapper_name }}"
-  when: item.filesystem is defined and item.filesystem != "swap" and item.encrypt is defined and item.encrypt
-  loop: "{{ logical_volumes }}"
-
-- name: Create raid filesystems
-  filesystem:
-    fstype: "{{ item.filesystem }}"
-    dev: "/dev/mapper/{{ item.mapper_name }}"
-  when: mdadm_arrays is defined
-  loop: "{{ mdadm_arrays }}"
+    fstype: "{{ item.1.filesystem }}"
+    dev: "/dev/{{ item.0.name }}/{{ item.1.name }}"
+  when: item.1.filesystem is defined and item.1.filesystem != "swap"
+  with_subelements:
+    - "{{ volume_groups }}"
+    - logical_volumes
 
 - include: swap.yml

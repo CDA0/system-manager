@@ -4,4 +4,4 @@
   become_user: aurman
   aur:
     name: srandrd
-    skip_installed: yes
+    state: present

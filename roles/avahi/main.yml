@@ -1,0 +1,29 @@
+---
+- name: Install avahi
+  pacman:
+    name:
+      - avahi
+      - nss-mdns
+    state: present
+
+- name: Add mdns to config
+  lineinfile:
+    path: /etc/nsswitch.conf
+    regexp: '^hosts\:'
+    line: 'hosts: files mymachines myhostname mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns'
+    create: no
+
+- name: ensure systemd-resolved is stopped and disabled
+  systemd:
+    name: systemd-resolved.service
+    daemon_reload: yes
+    state: stopped
+    enabled: no
+
+- name: Start service
+  systemd:
+    name: avahi-daemon.service
+    daemon_reload: yes
+    state: started
+    enabled: yes
+

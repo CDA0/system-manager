@@ -4,47 +4,40 @@
   become_user: aurman
   aur:
     name: rcm
-    skip_installed: yes
+    state: present
 
 - name: Clone user dotfiles
   git:
-    repo: "{{ item.dotfiles.url }}"
-    dest: "/home/{{ item.name }}/{{ item.dotfiles.destination }}"
+    repo: "{{ user.dotfiles.url }}"
+    dest: "/home/{{ user.name }}/{{ user.dotfiles.destination }}"
     accept_hostkey: yes
     update: no
-  when: item.dotfiles is defined
   become: yes
-  become_user: "{{ item.name }}"
-  loop: "{{ users }}"
+  become_user: "{{ user.name }}"
 
 - name: Install user dotfiles
-  command: "rcup -d /home/{{ item.name}}/{{ item.dotfiles.destination}} {{ item.dotfiles.rcup_flags }}
-  "
-  when: item.dotfiles is defined
+  command: "rcup -d /home/{{ user.name}}/{{ user.dotfiles.destination}} {{ user.dotfiles.rcup_flags }}"
   become: yes
-  become_user: "{{ item.name }}"
-  loop: "{{ users }}"
+  become_user: "{{ user.name }}"
 
 - name: Install antigen
-  shell: "curl -L git.io/antigen > /home/{{ item.name }}/.antigen.zsh"
-  when: item.dotfiles is defined
+  get_url:
+    url: https://git.io/antigen
+    dest: "/home/{{ user.name }}/.antigen.zsh"
   become: yes
-  become_user: "{{ item.name }}"
-  loop: "{{ users }}"
+  become_user: "{{ user.name }}"
 
 - name: Install plugins
-  command: "/bin/zsh -c 'source /home/{{ item.name }}/.zshrc; antigen reset'"
-  when: item.dotfiles is defined and item.shell is defined and 'zsh' in item.shell
+  command: "/bin/zsh -c 'source /home/{{ user.name }}/.zshrc; antigen reset'"
   become: yes
-  become_user: "{{ item.name }}"
+  become_user: "{{ user.name }}"
   changed_when: false
   failed_when: false
-  loop: "{{ users }}"
 
 - name: Post install commands
-  command: "/bin/zsh -c 'source /home/{{ users[0].name }}/.zshrc; {{ item }}'"
+  command: "/bin/zsh -c 'source /home/{{ user.name }}/.zshrc; {{ item }}'"
   become: yes
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ user.name }}"
   changed_when: false
   failed_when: false
-  loop: "{{ users[0].dotfiles.post_install_cmds }}"
+  loop: "{{ user.dotfiles.post_install_cmds }}"

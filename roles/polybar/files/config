@@ -1,0 +1,187 @@
+; Managed by ansible
+
+[colors]
+foreground = #D8DEE9
+background = #2E3440
+red        = #BF616A
+blue       = #81A1C1
+yellow     = #EBCB8B
+green      = #A3BE8C
+magenta    = #B48EAD
+cyan       = #88C0D0
+white      = #E5E9F0
+
+
+
+[bar/topbar]
+wm-restack = bspwm
+height = 22
+foreground = ${colors.foreground}
+background = ${colors.background}
+font-0 = Lucida Grande:style=Bold:size=9;2
+font-1 = SauceCodePro Nerd Font:style=Black:size=10;2
+font-2 = SauceCodePro Nerd Font:style=Black:size=10;1
+font-3 = "Font Awesome 5 Free:style=Solid:pixelsize=12;3"
+font-4 = "Font Awesome 5 Free:style=Regular:pixelsize=12;3"
+font-5 = "Font Awesome 5 Brands:pixelsize=12;3"
+padding-right = 2
+module-margin = 2
+modules-left   = bspwm player-mpris-simple title
+modules-center = date
+modules-right  = filesystem pulseaudio-control network cpu temperature memory battery
+cursor-click = pointer
+tray-position = right
+underline-size= 2
+
+
+
+[module/bspwm]
+type = internal/bspwm
+label-focused  = %{T2}%name%
+label-occupied = %{T2}%name%
+label-urgent   = %{T2}%name%
+label-empty    = %{T2}·
+label-focused-padding  = 2
+label-occupied-padding = 2
+label-urgent-padding   = 2
+label-empty-padding    = 2
+
+
+
+[module/title]
+type = internal/xwindow
+label-maxlen = 80
+
+
+
+[module/date]
+type = internal/date
+interval = 1
+label = %time% - %date%
+time     = %R
+date     = %a, %b %d
+time-alt = %T
+date-alt = %A, %B %d, %Y
+
+
+
+[module/cpu]
+type = internal/cpu
+format-underline = ${colors.blue}
+label =  %percentage:2%%
+
+
+
+[module/memory]
+type = internal/memory
+format-underline = ${colors.blue}
+label         = %gb_used%
+
+
+
+[module/network]
+type = internal/network
+interface = wlp5s0
+
+interval = 60
+label-connected =   %essid%
+label-disconnected =  Not Connected
+format-connected-underline = ${colors.blue}
+
+
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+format-discharging = <label-discharging>
+format-charging    = <label-charging>
+format-full        = <label-full>
+format-discharging-foreground = ${colors.yellow}
+format-discharging-underline = ${colors.yellow}
+format-charging-foreground = ${colors.white}
+format-charging-underline = ${colors.blue}
+format-full-foreground     = ${colors.green}
+format-full-underline = ${colors.green}
+
+
+
+[module/temperature]
+type = internal/temperature
+
+hwmon-path = /sys/devices/platform/it87.656/hwmon/hwmon1/temp2_input
+
+warn-temperature = 60
+format = <label>
+format-warn = <label-warn>
+format-underline = ${colors.blue}
+label-warn-foreground = ${colors.red}
+format-warn-underline = ${colors.red}
+
+
+[module/pulseaudio-control]
+type = custom/script
+tail = true
+label=%output%
+format-underline = ${colors.blue}
+
+exec = ~/.config/polybar/scripts/pulseaudio-control.bash listen
+click-right = exec pavucontrol &
+click-left = ~/.config/polybar/scripts/pulseaudio-control.bash togmute
+click-middle = ~/.config/polybar/scripts/pulseaudio-control.bash next-sink
+scroll-up = ~/.config/polybar/scripts/pulseaudio-control.bash up
+scroll-down = ~/.config/polybar/scripts/pulseaudio-control.bash down
+label-padding = 2
+label-foreground = ${colors.foreground}
+
+
+[module/mpd]
+type = internal/mpd
+label-offline = mpd is offline
+format-online = <icon-prev> <toggle> <icon-next> <label-song>
+format-offline = <label-offline>
+host = 127.0.0.1
+port = 6600
+icon-prev = 
+icon-stop = 
+icon-play = 
+icon-pause = 
+icon-next = 
+
+label-song-maxlen = 25
+label-song-ellipsis = true
+
+bar-progress-width = 10
+bar-progress-indicator = |
+bar-progress-fill = ─
+bar-progress-empty = ─
+
+
+; [module/player-mpris-simple]
+; type = custom/script
+; exec = ~/.config/polybar/scripts/player-mpris-simple.sh
+; interval = 3
+; click-left = playerctl previous &
+; click-right = playerctl next &
+; click-middle = playerctl play-pause &
+
+
+[module/filesystem]
+type = internal/fs
+
+; Mountpoints to display
+mount-0 = /
+mount-1 = /home
+
+; Seconds to sleep between updates
+; Default: 30
+interval = 10
+
+; Display fixed precision values
+; Default: false
+fixed-values = true
+
+; Spacing between entries
+; Default: 2
+spacing = 4
+format-mounted-underline = ${colors.blue}

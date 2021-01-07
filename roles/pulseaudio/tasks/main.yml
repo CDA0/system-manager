@@ -22,6 +22,18 @@
       - bluez-utils
     state: present
 
+- name: Avoid resampling
+  lineinfile:
+    path: /etc/pulse/daemon.conf
+    regexp: '; avoid-resampling'
+    line: 'avoid-resampling = yes'
+
+- name: Update sample rate
+  lineinfile:
+    path: /etc/pulse/daemon.conf
+    regexp: '; default-sample-rate'
+    line: 'default-sample-rate = 48000'
+
 - name: Enable at login
   systemd:
     scope: user
@@ -29,8 +41,7 @@
     enabled: yes
     state: started
   become: yes
-  become_user: "{{ item.name }}"
-  loop: "{{ users }}"
+  become_user: "{{ user.name }}"
 
 - name: Install pulseaudio panel for xfce
   pacman:
@@ -41,15 +52,14 @@
 - name: Push default.pa
   copy:
     src: default.pa
-    dest: "/home/{{ item.name }}/.config/pulse/default.pa"
-  loop: "{{ users }}"
+    dest: "/home/{{ user.name }}/.config/pulse/default.pa"
 
 - name: Enable bluetooth at bluetooth
   ini_file:
     path: /etc/bluetooth/main.conf
     section: Policy
     option: AutoEnable
-    value: true
+    value: "true"
 
 - name: Start bluetooth
   systemd:

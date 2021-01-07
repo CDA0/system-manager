@@ -1,12 +1,84 @@
 ---
-- name: Install pacaudit
-  become: yes
-  become_user: aurman
-  aur:
-    name: pacaudit
+- name: Install arch-audit
+  pacman:
+    name: arch-audit
+  tags:
+    - pacman
 
 - name: Install informant
   become: yes
   become_user: aurman
   aur:
     name: informant
+  tags:
+    - pacman
+
+- name: Install reflector
+  pacman:
+      name: reflector
+      state: present
+  tags:
+    - pacman
+
+- name: Create pacman hook directory
+  file:
+    path: /etc/pacman.d/hooks
+    state: directory
+  tags:
+    - pacman
+
+- name: Push reflector update script
+  copy:
+      src: reflector-update.sh
+      dest: /usr/local/bin/reflector-update
+      mode: 0755
+  tags:
+    - pacman
+
+- name: Push pacman mirror list update hook
+  copy:
+      src: mirrorlist.hook
+      dest: /etc/pacman.d/hooks/mirrorlist.hook
+  tags:
+    - pacman
+
+- name: Push reflector update service file
+  copy:
+      src: reflector-update.service
+      dest: /etc/systemd/system/
+  notify:
+    - reload systemd config
+  tags:
+    - pacman
+
+- name: Push reflector update timer file
+  copy:
+      src: reflector-update.timer
+      dest: /etc/systemd/system/
+  notify:
+    - reload systemd config
+    - restart reflector update
+  tags:
+    - pacman
+
+- name: Push pacman cache cleanup service
+  copy:
+    src: paccache.service
+    dest: /etc/systemd/system/paccache.service
+  tags:
+    - pacman
+
+- name: Push pacman cache cleanup timer
+  copy:
+    src: paccache.timer
+    dest: /etc/systemd/system/paccache.timer
+  tags:
+    - pacman
+
+- name: Enable and start pacman cache cleanup timer
+  service:
+    name: paccache.timer
+    enabled: yes
+    state: started
+  tags:
+    - pacman

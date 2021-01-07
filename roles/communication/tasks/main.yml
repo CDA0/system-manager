@@ -1,0 +1,12 @@
+---
+- name: Install discord
+  pacman:
+    name: discord
+    state: present
+
+- name: Install slack
+  become: yes
+  become_user: aurman
+  aur:
+    name: slack-desktop
+    state: present

@@ -12,9 +12,9 @@
       confirm: yes
   roles:
     - { role: partition, tags: ['partition'] }
-    - { role: lvm, tags: ['lvm'], when: logical_volumes is defined }
     - { role: mdadm, tags: ['mdadm'], when: mdadm_arrays is defined }
     - { role: encrypt, tags: ['encrypt'], when: luks_passphrase != '' }
+    - { role: lvm, tags: ['lvm'], when: volume_groups is defined }
     - { role: filesystems, tags: ['filesystems'] }
     - { role: mounts, tags: ['mounts'] }
     - { role: "arch-bootstrap", tags: ['bootstrap'] }
@@ -64,17 +64,12 @@
 
     - name: close LUKS encrypted devices
       luks_device:
-        device: "/dev/{{ item.volume_group }}/{{ item.name }}"
+        device: "/dev/disk/by-id/{{ item.0.device_id }}-part{{ item.1.number }}"
         state: closed
-      when: logical_volumes is defined
-      loop: "{{ logical_volumes }}"
-
-    - name: close LUKS encrypted devices on raid
-      luks_device:
-        device: "/dev/md/{{ item.name }}"
-        state: closed
-      when: mdadm_arrays is defined
-      loop: "{{ mdadm_arrays }}"
+      when: item.1.encrypt is defined and item.1.encrypt
+      with_subelements:
+        - "{{ sata_drives }}"
+        - partitions
 
     # - name: reboot
       # command: reboot

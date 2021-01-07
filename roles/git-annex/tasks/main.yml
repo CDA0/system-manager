@@ -1,5 +1,0 @@
----
-- name: Install git annex
-  package:
-    name: git-annex
-    state: present

@@ -9,9 +9,14 @@
   become_user: aurman
   aur:
     name: brave-bin
-    skip_installed: yes
+    state: present
 
 - name: Qutebrowser
   pacman:
     name: qutebrowser
+    state: present
+
+- name: Chromium
+  pacman:
+    name: chromium
     state: present

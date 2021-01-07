@@ -8,3 +8,8 @@
   pacman:
     name: gimp
     state: present
+
+- name: Install digikam
+  pacman:
+    name: digikam
+    state: present

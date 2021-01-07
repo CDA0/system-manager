@@ -6,29 +6,10 @@
       - gnupg
     state: present
 
-- name: configure gnupg default cache for ssh
-  lineinfile:
-    path: "/home/{{ item.name }}/.gnupg/gpg-agent.conf"
-    regexp: '^default-cache-ttl-ssh'
-    line: "default-cache-ttl-ssh 60480000"
-    create: yes
-  loop: "{{ users }}"
-
-- name: configure gnupg max cache for ssh
-  lineinfile:
-    path: "/home/{{ item.name }}/.gnupg/gpg-agent.conf"
-    regexp: '^max-cache-ttl-ssh'
-    line: "max-cache-ttl-ssh 60480000"
-    create: yes
-  loop: "{{ users }}"
-
-- name: configure gnupg pinentry
-  lineinfile:
-    path: "/home/{{ item.name }}/.gnupg/gpg-agent.conf"
-    regexp: '^pinentry-program '
-    line: "pinentry-program /usr/bin/pinentry-curses"
-    create: yes
-  loop: "{{ users }}"
+- name: Copy gpg-agent.conf
+  copy:
+    src: gpg-agent.conf
+    dest: "/home/{{ user.name }}/.gnupg/gpg-agent.conf"
 
 - name: Enable gpg-agent
   systemd:
@@ -37,10 +18,9 @@
     enabled: yes
     state: started
   become: yes
-  become_user: "{{ item.name }}"
+  become_user: "{{ user.name }}"
   environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
-  loop: "{{ users }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ user.uid }}"
 
 - name: Enable dirmngr
   systemd:
@@ -49,10 +29,9 @@
     enabled: yes
     state: started
   become: yes
-  become_user: "{{ item.name }}"
+  become_user: "{{ user.name }}"
   environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
-  loop: "{{ users }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ user.uid }}"
 
 - name: Enable gpg-agent-ssh
   systemd:
@@ -61,10 +40,9 @@
     enabled: yes
     state: started
   become: yes
-  become_user: "{{ item.name }}"
+  become_user: "{{ user.name }}"
   environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ item.uid }}"
-  loop: "{{ users }}"
+    XDG_RUNTIME_DIR: "/run/user/{{ user.uid }}"
 
 # If using SSH Auth add the keygrip to ~/.gnupg/sshcontrol with:
-# gpg --list-keys --with-keygrip | grep -A 1 '\[A\]' | awk '{ getline; print $3 }'
+# gpg --list-keys --with-keygrip | grep -A 1 '\[A\]' | grep Keygrip | awk '{ print $3 }' > /home/{{ user.name }}/.gnupg/sshcontrol

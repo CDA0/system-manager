@@ -17,23 +17,21 @@
   copy:
     src: suspend-lock.service
     dest: /etc/systemd/system/suspend-lock@.service
-  
+
 - name: Lock on hibernate
   copy:
     src: hibernate-lock.service
     dest: /etc/systemd/system/hibernate-lock@.service
-  
+
 - name: Enable suspend lock
   systemd:
-    name: "suspend-lock@{{ item.name }}"
+    name: "suspend-lock@{{ user.name }}"
     enabled: yes
-  loop: "{{ users }}"
 
 - name: Enable hibernate lock
   systemd:
-    name: "hibernate-lock@{{ item.name }}"
+    name: "hibernate-lock@{{ user.name }}"
     enabled: yes
-  loop: "{{ users }}"
 
 - name: Install powertop
   pacman:
@@ -52,9 +50,9 @@
   # aur:
     # name: battery-stats-git
 
-- name: Install battop
-  become: yes
-  become_user: aurman
-  aur:
-    name: battop
+#- name: Install battop
+#  become: yes
+#  become_user: aurman
+#  aur:
+#    name: battop
 

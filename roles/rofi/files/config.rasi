@@ -1,0 +1,11 @@
+/* Managed by ansible */
+configuration {
+  combi-modi: "window,drun,ssh,run";
+  combi-hide-mode-prefix: true;
+  font: "Source Code Pro 10";
+  modi: "window,run,ssh,drun,combi";
+  show-icons: true;
+  sidebar-mode: true;
+	theme: "nord";
+  terminal: "alacritty";
+}

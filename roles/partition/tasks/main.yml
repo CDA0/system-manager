@@ -2,7 +2,7 @@
 - name: Partition drive
   parted:
     label: "{{ item.0.table }}"
-    device: "{{ item.0.device }}"
+    device: "/dev/disk/by-id/{{ item.0.device_id }}"
     # Parted indexes partitions starting from 1:
     number: "{{ item.1.number }}"
     name: "{{ item.1.name|default(omit) }}"

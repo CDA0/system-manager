@@ -3,5 +3,14 @@
   pacman:
     name: intel-ucode
     state: present
+  when: "'GenuineIntel' in ansible_processor"
   tags:
     - microcode
+
+- name: Install amd microcode
+  pacman:
+    name: amd-ucode
+    state: present
+  when: "'AuthenticAMD' in ansible_processor"
+  tags:
+  - microcode

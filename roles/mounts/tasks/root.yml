@@ -1,5 +1,5 @@
 ---
-- name: Mount root
+- name: Mount root from drive
   mount:
     path: "{{ arch_root }}{{ item.1.mountpoint }}"
     src: "{{ item.0.device }}-part{{ item.1.number }}"
@@ -11,22 +11,14 @@
     - "{{ sata_drives }}"
     - partitions
 
-- name: Mount root
+- name: Mount root from lvm
   mount:
-    path: "{{ arch_root }}{{ item.mountpoint }}"
-    src: "/dev/mapper/{{ item.mapper_name }}"
-    fstype: "{{ item.filesystem }}"
+    path: "{{ arch_root }}{{ item.1.mountpoint }}"
+    src: "/dev/{{ item.0.name }}/{{ item.1.name }}"
+    fstype: "{{ item.1.filesystem }}"
+    opts: "{{ item.1.mount_opts|default(omit) }}"
     state: mounted
-    opts: "{{ item.mount_opts|default(omit) }}"
-  when: item.mountpoint is defined and ("/" == item.mountpoint) and item.encrypt is defined and item.encrypt
-  loop: "{{ logical_volumes }}"
-
-- name: Mount root
-  mount:
-    path: "{{ arch_root }}{{ item.mountpoint }}"
-    src: "/dev/{{ item.volume_group }}/{{ item.name }}"
-    fstype: "{{ item.filesystem }}"
-    opts: "{{ item.mount_opts|default(omit) }}"
-    state: mounted
-  when: item.mountpoint is defined and ("/" == item.mountpoint) and item.encrypt is not defined
-  loop: "{{ logical_volumes }}"
+  when: item.1.mountpoint is defined and ("/" == item.1.mountpoint)
+  with_subelements:
+    - "{{ volume_groups }}"
+    - logical_volumes

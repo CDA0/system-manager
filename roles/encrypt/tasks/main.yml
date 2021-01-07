@@ -3,72 +3,45 @@
 
 - name: Encrypt with passphrase and open
   luks_device:
-    device: "/dev/{{ item.volume_group }}/{{ item.name }}"
+    device: "/dev/disk/by-id/{{ item.0.device_id }}-part{{ item.1.number }}"
     state: opened
-    name: "{{ item.mapper_name }}"
+    name: "{{ item.1.name }}"
     passphrase: "{{ luks_passphrase }}"
-    type: luks1
-  when: item.use_passphrase is defined and item.use_passphrase
-  loop: "{{ logical_volumes }}"
+    type: luks2
+  when: item.1.encrypt is defined and item.1.encrypt
+  with_subelements:
+    - "{{ sata_drives }}"
+    - partitions
 
-- name: Encrypt with keyfile and open luks
+- name: Add keyfile to passphrase encrypted
   luks_device:
-    device: "/dev/{{ item.volume_group }}/{{ item.name }}"
+    device: "/dev/disk/by-id/{{ item.0.device_id }}-part{{ item.1.number }}"
     state: opened
-    name: "{{ item.mapper_name }}"
-    keyfile: "/{{ item.name }}.keyfile"
-    type: luks1
-  when: item.keyfile is defined and item.keyfile and item.use_passphrase is undefined
-  loop: "{{ logical_volumes }}"
+    name: "{{ item.1.name }}"
+    new_keyfile: "/{{ item.1.name }}.keyfile"
+    type: luks2
+  when: item.1.keyfile is defined and item.1.keyfile
+  with_subelements:
+    - "{{ sata_drives }}"
+    - partitions
 
 - name: Encrypt with passphrase and open luks for mdadm
   luks_device:
     device: "/dev/md/{{ item.name }}"
     state: opened
-    name: "{{ item.mapper_name }}"
+    name: "{{ item.name }}"
     passphrase: "{{ luks_passphrase }}"
-    type: luks1
-  when: item.use_passphrase is defined and item.use_passphrase
+    type: luks2
+  when: item.encrypt is defined and item.encrypt
   loop: "{{ mdadm_arrays }}"
-
-- name: Encrypt with keyfile and open luks for mdadm
-  luks_device:
-    device: "/dev/md/{{ item.name }}"
-    state: opened
-    name: "{{ item.mapper_name }}"
-    keyfile: "/{{ item.name }}.keyfile"
-    type: luks1
-  when: item.keyfile is defined and item.keyfile and item.use_passphrase is undefined
-  loop: "{{ mdadm_arrays }}"
-
-- name: Add keyfile to passphrase encrypted
-  luks_device:
-    device: "/dev/{{ item.volume_group }}/{{ item.name }}"
-    state: opened
-    name: "{{ item.mapper_name }}"
-    passphrase: "{{ luks_passphrase }}"
-    new_keyfile: "/{{ item.name }}.keyfile"
-    type: luks1
-  when: item.keyfile is defined and item.keyfile and item.use_passphrase is defined and item.use_passphrase
-  loop: "{{ logical_volumes }}"
 
 - name: Add keyfile to passphrase encrypted on raid
   luks_device:
     device: "/dev/md/{{ item.name }}"
     state: opened
-    name: "{{ item.mapper_name }}"
+    name: "{{ item.name }}"
     passphrase: "{{ luks_passphrase }}"
     new_keyfile: "/{{ item.name }}.keyfile"
-    type: luks1
-  when: item.keyfile is defined and item.keyfile and item.use_passphrase is defined and item.use_passphrase
+    type: luks2
+  when: item.keyfile is defined and item.keyfile
   loop: "{{ mdadm_arrays }}"
-
-- name: Encrypt volatile and open
-  luks_device:
-    device: "/dev/{{ item.volume_group }}/{{ item.name }}"
-    state: opened
-    name: "{{ item.mapper_name }}"
-    passphrase: "/dev/urandom"
-    type: luks1
-  when: item.volatile is defined and item.volatile
-  loop: "{{ logical_volumes }}"

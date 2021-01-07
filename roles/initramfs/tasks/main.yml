@@ -1,32 +1,9 @@
 ---
-- name: Create hook for hibernate for encrypted swap
-  template:
-    src: hook-openswap.j2
-    dest: /etc/initcpio/hooks/openswap
-    mode: 700
-  when: logical_volumes is defined and item.filesystem is defined and item.filesystem == "swap"
-  loop: "{{ logical_volumes }}"
-
-- name: Install hook
-  template:
-    src: install-openswap.j2
-    dest: /etc/initcpio/install/openswap
-    mode: 700
-  when: logical_volumes is defined and item.filesystem is defined and item.filesystem == "swap"
-  loop: "{{ logical_volumes }}"
-
 - name: configure initramfs build hooks
   lineinfile:
     path: /etc/mkinitcpio.conf
     regexp: '^HOOKS='
     line: "HOOKS=({{ initramfs_hooks | join(' ') }})"
-
-- name: configure initramfs files
-  lineinfile:
-    path: /etc/mkinitcpio.conf
-    regexp: '^FILES='
-    line: "FILES=({{ luks_keys_location }}/cryptroot.keyfile)"
-  when: logical_volumes is defined
 
 - name: rebuild initramfs
   command: mkinitcpio -p linux

@@ -1,29 +1,26 @@
 ---
 - name: create user group
   group:
-    name: "{{ item.group }}"
+    name: "{{ user.group }}"
     state: present
-  loop: "{{ users }}"
 
 - name: create user
   user:
-    name: "{{ item.name }}"
-    group: "{{ item.group }}"
+    name: "{{ user.name }}"
+    group: "{{ user.group }}"
     append: yes
-    groups: "{{ item.groups | join(',') }}"
+    groups: "{{ user.groups | join(',') }}"
     password: "{{ user_password }}"
-    shell: "{{ item.shell }}"
-    uid: "{{ item.uid }}"
+    shell: "{{ user.shell }}"
+    uid: "{{ user.uid }}"
     update_password: on_create
   when: user_password is defined
-  loop: "{{ users }}"
 
 - name: Create user ssh dir
   file:
-    path: /home/{{ item.name }}/.ssh
+    path: /home/{{ user.name }}/.ssh
     state: directory
-    owner: "{{ item.name }}"
-    group: "{{ item.group }}"
-  loop: "{{ users }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
 
 - include: sudo.yml

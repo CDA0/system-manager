@@ -20,5 +20,6 @@
   become_user: aurman
   aur:
     name: yay
+    use: makepkg
     skip_pgp_check: yes
-    skip_installed: yes
+    state: present

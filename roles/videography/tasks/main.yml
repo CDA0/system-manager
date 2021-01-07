@@ -1,5 +1,8 @@
 ---
-- name: Install openshot
+- name: Install kdenlive
   pacman:
-    name: openshot
+    name:
+      - kdenlive
+      - movit
+      - sox
     state: present

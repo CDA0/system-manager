@@ -7,24 +7,17 @@
     state: present
 
 - name: Get UUID of encrypted root
-  command: "blkid -s UUID -o value /dev/vgroot/cryptroot"
+  command: "blkid -s UUID -o value /dev/disk/by-id/{{ root_device }}"
   register: root_uuid
 
 - name: configure encrypted device for GRUB
   lineinfile:
     path: /etc/default/grub
     regexp: '^(.*)GRUB_CMDLINE_LINUX='
-    line: GRUB_CMDLINE_LINUX="cryptdevice=UUID={{ root_uuid.stdout }}:root root=/dev/mapper/root cryptkey=rootfs:{{ luks_keys_location }}/cryptroot.keyfile resume=/dev/mapper/swap {{ kernel_cmdline }}"
-
-- name: enable GRUB to unlock encrypted /boot
-  lineinfile:
-    path: /etc/default/grub
-    regexp: '^(.*)GRUB_ENABLE_CRYPTODISK='
-    line: "GRUB_ENABLE_CRYPTODISK=y"
+    line: GRUB_CMDLINE_LINUX="cryptdevice=UUID={{ root_uuid.stdout }}:cryptlvm root=/dev/vg00/root resume=/dev/vg00/swap {{ kernel_cmdline }}"
 
 - name: install GRUB bootloader for UEFI
-  command: grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=ArchLinux --recheck
+  command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux --recheck
 
 - name: configure GRUB
   command: grub-mkconfig -o /boot/grub/grub.cfg
-

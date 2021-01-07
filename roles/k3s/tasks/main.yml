@@ -30,9 +30,8 @@
   copy:
     src: /etc/rancher/k3s/k3s.yaml
     dest: /home/{{ item.name }}/.kube/config
-    owner: "{{ item.name }}"
-    group: "{{ item.name }}"
-  loop: "{{ users }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
 
 - name: Create kubectl symlink
   file:

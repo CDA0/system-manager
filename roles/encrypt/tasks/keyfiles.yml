@@ -1,8 +1,10 @@
 ---
-- name: Create key files for lvm
-  command: "dd if=/dev/urandom of=/{{ item.name }}.keyfile bs=1 count=256 creates=/{{ item.name }}.keyfile"
-  when: item.keyfile is defined and item.keyfile
-  loop: "{{ logical_volumes }}"
+- name: Create key files
+  command: "dd if=/dev/urandom of=/{{ item.1.name }}.keyfile bs=1 count=256 creates=/{{ item.1.name }}.keyfile"
+  when: item.1.encrypt is defined and item.1.encrypt
+  with_subelements:
+    - "{{ sata_drives }}"
+    - partitions
 
 
 - name: Create keyfiles for raid

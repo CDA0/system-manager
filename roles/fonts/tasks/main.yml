@@ -47,4 +47,4 @@
   become_user: aurman
   aur:
     name: "{{ aur_fonts }}"
-    skip_installed: yes
+    state: present

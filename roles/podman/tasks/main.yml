@@ -1,0 +1,15 @@
+---
+- name: Install podman
+  pacman:
+    name: podman
+    state: present
+
+- name: Install buildah
+  pacman:
+    name: buildah
+    state: present
+
+- name: Install skopeo
+  pacman:
+    name: skopeo
+    state: present

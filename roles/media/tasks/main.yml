@@ -18,7 +18,6 @@
       - mopidy-spotify
       - mopidy-mpd
 
-
 - name: Push service file
   copy:
     src: mopidy.service
@@ -31,6 +30,27 @@
     enabled: yes
     state: started
   become: yes
-  become_user: "{{ item.name }}"
-  loop: "{{ users }}"
+  become_user: "{{ user.name }}"
 
+- name: Install spotifyd
+  pacman:
+    name: spotifyd
+    state: present
+
+- name: Install spotify-tui
+  become: yes
+  become_user: aurman
+  aur:
+    name: spotify-tui
+    state: present
+
+- name: Start and enable spotifyd
+  systemd:
+    scope: user
+    name: spotifyd.service
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ user.name }}"
+
+  # TODO: Add spotify files here with ansible vault secrets

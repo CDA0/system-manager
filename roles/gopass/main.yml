@@ -1,0 +1,6 @@
+---
+- name: Install gopass
+  pacman:
+    name: gopass
+    state: present
+

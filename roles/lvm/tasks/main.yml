@@ -8,9 +8,11 @@
 
 - name: Create LVM Volumes
   lvol:
-    vg: "{{ item.volume_group }}"
-    lv: "{{ item.name }}"
-    size: "{{ item.size }}"
-    shrink: "{{ item.shrink | default(omit) }}"
+    vg: "{{ item.0.name }}"
+    lv: "{{ item.1.name }}"
+    size: "{{ item.1.size }}"
+    shrink: "{{ item.1.shrink | default(omit) }}"
     state: present
-  loop: "{{ logical_volumes }}"
+  with_subelements:
+    - "{{ volume_groups }}"
+    - logical_volumes
