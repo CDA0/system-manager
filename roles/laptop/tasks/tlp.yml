@@ -8,12 +8,12 @@
       - tlp-rdw
     state: present
 
-# - name: Copy TLP configuration file
-#   copy:
-#    src: tlp.conf
-#    dest: /etc/default/tlp
-#   notify:
-#   - restart tlp
+- name: Copy TLP configuration file
+  copy:
+   src: tlp.conf
+   dest: /etc/default/tlp
+  notify:
+  - restart tlp
 
 - name: Mask systemd radio service
   systemd:
@@ -30,9 +30,3 @@
     name: tlp.service
     enabled: yes
     state: started
-
-#- name: Enable TLP sleep
-#  systemd:
-#    name: tlp-sleep.service
-#    enabled: yes
-#    state: started

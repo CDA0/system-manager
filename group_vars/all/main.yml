@@ -29,6 +29,7 @@ user:
     - sys
     - video
     - systemd-journal
+  password_store: git@github.com:cda0/password-store
   dotfiles:
     url: https://gitlab.com/cda0/dotfiles
     destination: .dotfiles
@@ -71,6 +72,7 @@ base_packages:
 system_tools:
   - arch-wiki-lite
   - arch-wiki-docs
+  - bat
   - ctags
   - fd
   - fzf
@@ -79,10 +81,12 @@ system_tools:
   - glances
   - exa
   - neofetch
+  - nfs-utils
   # - neovim Add back in when neovim 0.5 is stable
   - openssh
   - ripgrep
   - tmux
+  - youtube-dl
 
 initramfs_hooks:
   - base

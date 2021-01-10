@@ -1,7 +1,0 @@
----
-- name: Install polybar
-  become: yes
-  become_user: aurman
-  aur:
-    name: polybar
-    skip_installed: yes

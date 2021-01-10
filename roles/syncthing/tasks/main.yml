@@ -1,0 +1,20 @@
+---
+- name: Install syncthing
+  package:
+    name: syncthing
+
+- name: Install synthingtray for kde
+  become: yes
+  become_user: aurman
+  aur:
+    name: syncthingtray
+    state: present
+
+- name: Start and enable syncthing service
+  systemd:
+    scope: user
+    name: syncthing.service
+    enabled: yes
+    state: started
+  become: yes
+  become_user: "{{ user.name }}"

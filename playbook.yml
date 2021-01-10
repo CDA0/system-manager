@@ -20,8 +20,7 @@
     - { role: laptop, tags: ['laptop'], when: "'ThinkPad' in ansible_product_version" }
     - { role: pulseaudio, tags: ['pulseaudio'], when: desktop is defined }
     - { role: x, tags: ['x'], when: desktop is defined }
-    - { role: bspwm, tags: ['bspwm'], when: desktop is defined }
-    - { role: xfce, tags: ['xfce'], when: "'xfce' in desktop" }
+    - { role: kde, tags: ['kde'], when: desktop is defined }
     - { role: sddm, tags: ['sddm'], when: desktop is defined }
     - { role: fonts, tags: ['fonts'], when: desktop is defined }
     - { role: browsers, tags: ['browsers'], when: desktop is defined }
@@ -30,9 +29,12 @@
     - { role: photography, tags: ['photography'], when: desktop is defined }
     - { role: videography, tags: ['videography'], when: desktop is defined }
     - { role: communication, tags: ['communication'], when: desktop is defined }
-    - { role: ranger, tags: ['ranger'], when: desktop is defined }
     # # - { role: firejail, tags: ['firejail'], when: desktop is defined }
     - { role: udisks, tags: ['udisks'], when: desktop is defined }
     - { role: cups, tags: ['cups'], when: desktop is defined }
-    # - { role: media, tags: ['media'], when: desktop is defined }
+    - { role: avahi, tags: ['avahi'], when: desktop is defined }
+    - { role: gopass, tags: ['gopass'], when: desktop is defined }
+    - { role: syncthing, tags: ['syncthing'], when: desktop is defined }
+    - { role: media, tags: ['media'], when: desktop is defined }
+    - { role: virtualbox, tags: ['virtualbox'], when: desktop is defined }
 

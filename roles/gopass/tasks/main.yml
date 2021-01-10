@@ -1,0 +1,28 @@
+---
+- name: Install gopass
+  pacman:
+    name:
+    - gopass
+    - xclip
+    state: present
+
+- name: Check for password store   
+  stat:
+    path: "/home/{{ user.name }}/.local/share/gopass/stores/root"
+  register: password_store
+
+- name: Clone password store
+  become: true
+  become_user: "{{ user.name }}"
+  shell: "gopass clone {{ user.password_store }}"
+  when: user.password_store is defined and not password_store.stat.exists
+
+- name: Configure for browsers
+  become: true
+  become_user: "{{ user.name }}"
+  shell: "echo Y | gopass-jsonapi configure --browser {{ item.browser }} --path /home/{{ user.name }}/.config/gopass --manifest-path {{ item.manifest_path}} --libpath /usr/lib --global false"
+  with_items:
+    - { browser: "brave", manifest_path: "/home/craig/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/com.justwatch.gopass.json" }
+    - { browser: "chromium", manifest_path: "/home/{{ user.name }}/.config/chromium/NativeMessagingHosts/com.justwatch.gopass.json" }
+    - { browser: "firefox", manifest_path: "/home/{{ user.name }}/.mozilla/native-messaging-hosts/com.justwatch.gopass.json" }
+  when: user.password_store is defined

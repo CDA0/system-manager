@@ -1,0 +1,74 @@
+---
+- name: Install plasma
+  pacman:
+    name:
+      - plasma
+      - dolphin
+      - ark
+    state: present
+
+- name: Install aur themes
+  become: yes
+  become_user: aurman
+  aur:
+    name:
+    - numix-square-icon-theme-git
+    # - numix-themes-archblue
+    # - numix-icon-theme-git
+    # - numix-square-icon-theme
+    - numix-circle-arc-icons-git
+    - numix-circle-icon-theme-git
+    state: present
+    
+- name: Set caps to control
+  shell: |
+    kwriteconfig5 --file kxkbrc --group "Layout" --key "ResetOldOptions" true
+    kwriteconfig5 --file kxkbrc --group "Layout" --key "Options" "ctrl:nocaps"
+
+- name: Configure power management
+  shell: |
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "BrightnessControl" --key "value" 100
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "DPMSControl" --key "idleTime" 600
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "DPMSControl" --key "lockBeforeTurnOff" 0
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "DimDisplay" --key "idleTime" 300000
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "HandleButtonEvents" --key "lidAction" 2
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "HandleButtonEvents" --key "powerButtonAction"  1
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "HandleButtonEvents" --key "powerDownAction"  16
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "HandleButtonEvents" --key "triggerLidActionWhenExternalMonitorPresent" "false"
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "SuspendSession" --key "idleTime" 1800000
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "SuspendSession" --key "suspendThenHibernate" "false"
+    kwriteconfig5 --file powermanagementprofilesrc --group "AC" --group "SuspendSession" --key "suspendType" 1
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "BrightnessControl" --key "value" 50
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "DPMSControl" --key "idleTime" 300
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "DPMSControl" --key "lockBeforeTurnOff" 0
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "DimDisplay" --key "idleTime" 120000
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "HandleButtonEvents" --key "lidAction" 2
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "HandleButtonEvents" --key "powerButtonAction"  2
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "HandleButtonEvents" --key "powerDownAction"  16
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "HandleButtonEvents" --key "triggerLidActionWhenExternalMonitorPresent" "true"
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "SuspendSession" --key "idleTime" 600000
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "SuspendSession" --key "suspendThenHibernate" "true"
+    kwriteconfig5 --file powermanagementprofilesrc --group "Battery" --group "SuspendSession" --key "suspendType" 1
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "BrightnessControl" --key "value" 30
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "DPMSControl" --key "idleTime" 120
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "DPMSControl" --key "lockBeforeTurnOff" 0
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "DimDisplay" --key "idleTime" 60000
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "HandleButtonEvents" --key "lidAction" 2
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "HandleButtonEvents" --key "powerButtonAction"  2
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "HandleButtonEvents" --key "powerDownAction"  16
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "HandleButtonEvents" --key "triggerLidActionWhenExternalMonitorPresent" "true"
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "SuspendSession" --key "idleTime" 300000
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "SuspendSession" --key "suspendThenHibernate" "true"
+    kwriteconfig5 --file powermanagementprofilesrc --group "LowBattery" --group "SuspendSession" --key "suspendType" 1
+
+- name: Configure default applications
+  shell: |
+    kwriteconfig5 --file mimeapps.list --group "Added Associations" --key "inode/directory" "org.kde.dolphin.desktop"
+    kwriteconfig5 --file mimeapps.list --group "Default Applications" --key "inode/directory" "org.kde.dolphin.desktop"
+    kwriteconfig5 --file mimeapps.list --group "Default Applications" --key "x-scheme-handler/http" "firefox.desktop"
+    kwriteconfig5 --file mimeapps.list --group "Default Applications" --key "x-scheme-handler/https" "firefox.desktop"
+    kwriteconfig5 --file mimeapps.list --group "Default Applications" --key "x-scheme-handler/slack" "slack.desktop"
+
+- name: Configure krunner
+  shell: |
+    kwriteconfig5 --file krunnerrc --group "Plugins" --key "Spell CheckerEnabled" "false"

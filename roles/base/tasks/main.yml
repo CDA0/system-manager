@@ -27,3 +27,5 @@
 
 - include: packages.yml
 - include: shell.yml
+- include: mdadm.yml
+  when: mdadm_arrays is defined

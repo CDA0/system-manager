@@ -1,38 +1,6 @@
 ---
 - include: tlp.yml
 
-- name: Configure power button
-  lineinfile:
-    path: /etc/systemd/logind.conf
-    regexp: '^#HandlePowerKey='
-    line: 'HandlePowerKey=suspend'
-
-- name: Configure lid switch
-  lineinfile:
-    path: /etc/systemd/logind.conf
-    regexp: '^#HandleLidSwitch='
-    line: 'HandleLidSwitch=hibernate'
-
-- name: Lock on suspend
-  copy:
-    src: suspend-lock.service
-    dest: /etc/systemd/system/suspend-lock@.service
-
-- name: Lock on hibernate
-  copy:
-    src: hibernate-lock.service
-    dest: /etc/systemd/system/hibernate-lock@.service
-
-- name: Enable suspend lock
-  systemd:
-    name: "suspend-lock@{{ user.name }}"
-    enabled: yes
-
-- name: Enable hibernate lock
-  systemd:
-    name: "hibernate-lock@{{ user.name }}"
-    enabled: yes
-
 - name: Install powertop
   pacman:
     name: powertop

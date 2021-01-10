@@ -2,8 +2,8 @@
 
 set -e
 
-git submodule update --init --recursive
-
 mount -o remount,size=1G /run/archiso/cowspace
 
-pacman -Sy python ansible
+git submodule update --init --recursive
+
+pacman -Sy --noconfirm python ansible

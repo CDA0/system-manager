@@ -1,0 +1,22 @@
+- name: Install raid check
+  become: yes
+  become_user: aurman
+  aur:
+    name: raid-check-systemd
+    state: present
+
+- name: Enable and start raid-check service
+  service:
+    name: raid-check.service
+    enabled: yes
+    state: started
+  tags:
+    - mdadm
+
+- name: Enable and start raid-check timer
+  service:
+    name: raid-check.service
+    enabled: yes
+    state: started
+  tags:
+    - mdadm

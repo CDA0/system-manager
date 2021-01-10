@@ -61,6 +61,14 @@
   tags:
     - pacman
 
+- name: Enable and start reflector cache cleanup timer
+  service:
+    name: reflector-update.timer
+    enabled: yes
+    state: started
+  tags:
+    - pacman
+
 - name: Push pacman cache cleanup service
   copy:
     src: paccache.service

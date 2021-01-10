@@ -1,0 +1,14 @@
+---
+- name: Install virtualbox
+  pacman:
+    name:
+      - virtualbox
+      - virtualbox-host-modules-arch
+    state: present
+
+- name: Install virtualbox extensions
+  become: yes
+  become_user: aurman
+  aur:
+    name: virtualbox-ext-oracle
+    state: present

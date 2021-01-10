@@ -1,8 +1,0 @@
----
-- name: Install ranger and w3m for image previews
-  pacman:
-    name:
-      - ranger
-      - w3m
-      - ffmpegthumbnailer
-      - mediainfo

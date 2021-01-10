@@ -1,14 +1,13 @@
 # System Manager
 
-## Requirements
+## Installation
 
-`mount -o remount,size=1G /run/archiso/cowspace`
+The `install.yml` ansible playbook assumes that the system has been booted form [System Rescue CD](https://www.system-rescue.org).
 
-`pacman -Sy ansible`
+From the prompt we can clone the repo then run `setup.sh`
 
 `git clone https://github.com/cda0/system-manager`
 
-`git submodule update --init --recursive`
 
 ## Inspired by
 

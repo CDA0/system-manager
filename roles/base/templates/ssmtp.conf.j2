@@ -1,0 +1,12 @@
+#
+# /etc/ssmtp.conf -- a config file for sSMTP sendmail.
+#
+# Manged by ansible
+#
+
+mailhub={{ smtp_server }}:{{ smtp_port }}
+AuthUser={{ smtp_user }}
+AuthPass={{ smtp_password }}
+UseSTARTTLS=YES
+TLS_CA_File=/etc/ssl/certs/ca-certificates.crt
+
