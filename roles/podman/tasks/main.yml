@@ -4,6 +4,16 @@
     name: podman
     state: present
 
+- name: Allow user to run rootless containers (subuid)
+  template:
+    src: subuid
+    dest: /etc/subuid
+
+- name: Allow user to run rootless containers (subgid)
+  template:
+    src: subuid
+    dest: /etc/subgid
+
 - name: Install buildah
   pacman:
     name: buildah

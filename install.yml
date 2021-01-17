@@ -11,14 +11,9 @@
       private: yes
       confirm: yes
   roles:
-    - { role: partition, tags: ['partition'] }
-    - { role: mdadm, tags: ['mdadm'], when: mdadm_arrays is defined }
-    - { role: encrypt, tags: ['encrypt'], when: luks_passphrase != '' }
-    - { role: lvm, tags: ['lvm'], when: volume_groups is defined }
-    - { role: filesystems, tags: ['filesystems'] }
-    - { role: mounts, tags: ['mounts'] }
-    - { role: "arch-bootstrap", tags: ['bootstrap'] }
-    - { role: luks-move-keyfiles, tags: ['encrypt'], when: luks_passphrase != '' }
+    - { role: init_disks, tags: ['init-disks'] }
+    - { role: arch-bootstrap, tags: ['bootstrap'] }
+    - { role: finalize-install, tags: ['finalize-install'], when: luks_passphrase|length > 0 }
 
 - name: Install base system
   connection: chroot

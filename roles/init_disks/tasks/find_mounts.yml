@@ -1,0 +1,16 @@
+---
+# - name: Find partition mounts
+#   set_fact:
+#     mounts: "{{ [] + item.1 }}"
+#   when: item.1.mountpoint is defined
+#   with_subelements:
+#     - "{{ sata_drives }}"
+#     - partitions
+
+
+
+- debug:
+    msg: "{{ volume_groups | json_query('[].logical_volumes[?mountpoint].{ vg_name: name, filesystem: @.filesystem, mountpoint: @.mountpoint, name: @.name, size: @.size }') }}"
+  # with_subelements:
+  # - "{{ volume_groups }}"
+  # - logical_volumes

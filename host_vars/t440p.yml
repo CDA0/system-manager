@@ -4,8 +4,9 @@ keymap: uk
 consolefont: Lat2-Terminus16
 
 bootloader: grub
+bootloader_type: uefi
 
-desktop: bspwm
+desktop: plasma
 
 x_drivers:
   - xf86-input-synaptics
@@ -20,80 +21,76 @@ extra_packages:
 
 kernel_cmdline: 'acpi_osi= i915 modeset=1'
 
-root_device: ata-TS120GMTS420S_F586330108-part3
-
-sata_drives:
-- device_id: ata-TS120GMTS420S_F586330108
-  ssd: true
-  table: gpt
-  partitions:
-  - name: bios
-    number: 1
-    start: 0%
-    end: 1MiB
-    flags: [bios_grub]
-  - name: efi
-    number: 2
-    start: 1MiB
-    end: 512MiB
-    flags: [esp]
-    filesystem: vfat
-    mountpoint: /boot
-  - name: cryptlvm
-    number: 3
-    start: 512MiB
-    end: 100%
-    flags: [lvm]
-    encrypt: true
-- device_id: ata-TOSHIBA_MK5061GSYN_X2OCY0Z5F
-  table: gpt
-  partitions:
-  - name: raid
-    number: 1
-    start: 0%
-    end: 100%
-    flags: [raid]
-- device_id: ata-ST500LM021-1KJ152_W622TAES
-  table: gpt
-  partitions:
-  - name: raid
-    number: 1
-    start: 0%
-    end: 100%
-    flags: [raid]
-
-mdadm_arrays:
-- name: md00
+data_disks:
+- devices:
+  - /dev/disk/by-id/ata-TS120GMTS420S_F586330108
+  partition_number: 1
+  partition_start: 0%
+  partition_end: 1MiB
+  partition_name: bios
+  partition_flags: [bios_grub]
+- path: /boot
   devices:
-  - /dev/disk/by-id/ata-TOSHIBA_MK5061GSYN_X2OCY0Z5F-part1
-  - /dev/disk/by-id/ata-ST500LM021-1KJ152_W622TAES-part1
-  level: 1
+  - /dev/disk/by-id/ata-TS120GMTS420S_F586330108
+  partition_number: 2
+  partition_start: 1MiB
+  partition_end: 512MiB
+  partition_name: efi
+  partition_flags: [esp]
+  fs_type: vfat
+- devices:
+  - /dev/disk/by-id/ata-TS120GMTS420S_F586330108
+  partition_number: 3
+  partition_start: 512MiB
+  partition_end: 100%
+  partition_name: cryptlvm
+  partition_flags: [lvm]
   encrypt: true
-  keyfile: true
-  state: present
-
-volume_groups:
-- name: vg00
-  pvs:
+  encrypt_name: cryptlvm
+  type: lvm
+  cryptroot_device: true
+- devices:
+  - /dev/disk/by-id/ata-ST500LM021-1KJ152_W622TAES
+  - /dev/disk/by-id/ata-TOSHIBA_MK5061GSYN_X2OCY0Z5F
+  type: raid
+  mdadm_level: 1
+  mdadm_name: md00
+  partition_number: 1
+  partition_start: 0%
+  partition_end: 100%
+  partition_name: md00
+  partition_flags: [raid]
+  encrypt: true
+  encrypt_keyfile: true
+  encrypt_name: cryptmd00
+- devices:
   - /dev/mapper/cryptlvm
-  logical_volumes:
-  - name: root
-    size: 32G
-    filesystem: ext4
-    mountpoint: /
-  - name: swap
-    size: 20G
-    filesystem: swap
-  - name: home
-    size: 100%FREE
-    filesystem: ext4
-    mountpoint: /home
-- name: vg01
-  pvs:
-  - /dev/mapper/md00
-  logical_volumes:
-  - name: data
-    size: 100%FREE
-    filesystem: ext4
-    mountpoint: /data
-
+  type: lvm_vg
+  lvm_vg_name: vg00
+- devices:
+  - /dev/mapper/cryptmd00
+  type: lvm_vg
+  lvm_vg_name: vg01
+- path: /
+  type: lvm_lv
+  fs_type: ext4
+  size: 32G
+  lvm_vg: vg00
+  lvm_lv_name: root
+- type: lvm_lv
+  fs_type: swap
+  size: 20G
+  lvm_vg: vg00
+  lvm_lv_name: swap
+- path: /home
+  type: lvm_lv
+  fs_type: ext4
+  size: 100%FREE
+  lvm_vg: vg00
+  lvm_lv_name: home
+- path: /data
+  type: lvm_lv
+  fs_type: ext4
+  size: 100%FREE
+  lvm_vg: vg01
+  lvm_lv_name: data

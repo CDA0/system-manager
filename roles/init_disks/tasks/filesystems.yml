@@ -17,4 +17,18 @@
     - "{{ volume_groups }}"
     - logical_volumes
 
-- include: swap.yml
+- name: Create lvm swap
+  filesystem:
+    fstype: "{{ item.1.filesystem }}"
+    dev: "/dev/mapper/{{ item.1.name }}"
+  when: item.1.filesystem is defined and item.1.filesystem == "swap"
+  with_subelements:
+    - "{{ volume_groups }}"
+    - logical_volumes
+
+- name: Swap
+  command: "swapon /dev/mapper/{{ item.1.name }}"
+  when: ansible_swaptotal_mb < 1 and item.1.filesystem is defined and item.1.filesystem == "swap"
+  with_subelements:
+    - "{{ volume_groups }}"
+    - logical_volumes

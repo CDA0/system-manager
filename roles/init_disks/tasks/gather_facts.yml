@@ -1,0 +1,23 @@
+---
+- set_fact:
+    root_device: "{{ rd[0].devices[0] }}{% if rd[0].partition_number %}-part{{ rd[0].partition_number|string }}{% endif %}"
+  vars:
+    rd: "{{ data_disks | json_query('[?cryptroot_device]') }}"
+
+- set_fact:
+    partitions: "{{ data_disks | json_query('[?partition_number]') }}"
+
+- set_fact:
+    mdadm_arrays: "{{ data_disks | json_query('[?type==`raid`]') }}"
+
+- set_fact:
+    encrypted: "{{ data_disks | json_query('[?encrypt]') }}"
+
+- set_fact:
+    encrypted_keyfiles: "{{ data_disks | json_query('[?encrypt_keyfile]') }}"
+
+- set_fact:
+    volume_groups: "{{ data_disks | json_query('[?type==`lvm_vg`]') }}"
+
+- set_fact:
+    logical_volumes: "{{ data_disks | json_query('[?type==`lvm_lv`]') }}"

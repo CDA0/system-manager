@@ -5,6 +5,7 @@
       - plasma
       - dolphin
       - ark
+      - latte-dock
     state: present
 
 - name: Install aur themes
@@ -19,6 +20,11 @@
     - numix-circle-arc-icons-git
     - numix-circle-icon-theme-git
     state: present
+
+- name: Autostart latte-dock
+  copy:
+    src: org.kde.latte-dock.desktop
+    dest: "/home/{{ user.name }}/.config/autostart/org.kde.latte-dock.desktop"
     
 - name: Set caps to control
   shell: |
@@ -72,3 +78,9 @@
 - name: Configure krunner
   shell: |
     kwriteconfig5 --file krunnerrc --group "Plugins" --key "Spell CheckerEnabled" "false"
+
+- name: Config kwin shortcuts
+  shell: |
+    kwriteconfig5 --file kglobalshortcutsrc --group "kwin" --key "Switch to Next Desktop" "Meta+Shift+Right,none,Switch to Next Desktop"
+    kwriteconfig5 --file kglobalshortcutsrc --group "kwin" --key "Switch to Previous Desktop" "Meta+Shift+Left,none,Switch to Previous Desktop"
+    kwriteconfig5 --file kglobalshortcutsrc --group "kwin" --key "Switch to Desktop 1" "Meta+\!,none,Switch to Desktop 1"
