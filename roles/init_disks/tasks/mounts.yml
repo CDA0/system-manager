@@ -11,7 +11,7 @@
 - name: Mount other filesystems
   mount:
     path: "{{ arch_root }}{{ item.path }}"
-    src: "{% if item.type == 'lvm_lv' %}/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
+    src: "{% if item.type is defined and item.type == 'lvm_lv' %}/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
     fstype: "{{ item.fs_type }}"
     state: mounted
     opts: "{{ item.mount_opts|default(omit) }}"
