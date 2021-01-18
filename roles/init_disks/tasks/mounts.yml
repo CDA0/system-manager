@@ -2,18 +2,18 @@
 - name: Mount root
   mount:
     path: "{{ arch_root }}{{ item.path }}"
-    src: "{% if type == 'lvm_lvm'%}/dev/{{ lvm_vg }}/{{ lvm_lv_name }}{% else %}{{ item.devices[0] }}{% endif %}"
+    src: "{% if item.type == 'lvm_lv' %}/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
     fstype: "{{ item.fs_type }}"
     state: mounted
-    opts: "{{ item.1.mount_opts|default(omit) }}"
+    opts: "{{ item.mount_opts|default(omit) }}"
   loop: "{{ root_fs }}"
 
 - name: Mount other filesystems
   mount:
     path: "{{ arch_root }}{{ item.path }}"
-    src: "{% if type == 'lvm_lvm'%}/dev/{{ lvm_vg }}/{{ lvm_lv_name }}{% else %}{{ item.devices[0] }}{% endif %}"
+    src: "{% if item.type == 'lvm_lv' %}/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
     fstype: "{{ item.fs_type }}"
     state: mounted
-    opts: "{{ item.1.mount_opts|default(omit) }}"
+    opts: "{{ item.mount_opts|default(omit) }}"
   loop: "{{ other_mounts }}"
 
