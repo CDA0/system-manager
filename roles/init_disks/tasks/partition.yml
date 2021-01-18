@@ -8,7 +8,7 @@
     name: "{{ item.partition_name|default(omit) }}"
     part_start: "{{ item.partition_start }}"
     part_end: "{{ item.partition_end }}"
-    part_type: "{{ item.partition_flags|default(omit) }}"
+    part_type: "{{ item.partition_type|default('primary') }}"
     flags: "{{ item.partition_flags|default(omit) }}"
     state: present
-  loops: "{{ partitions }}"
+  loop: "{{ partitions }}"
