@@ -5,7 +5,7 @@
     dev: "{{ item.devices[0] }}"
   loop: "{{ partition_filesystems }}"
 
- name: Create lvm filesystems
+- name: Create lvm filesystems
   filesystem:
     fstype: "{{ item.fs_type }}"
     dev: "/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}"
