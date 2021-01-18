@@ -5,7 +5,7 @@
 
 - name: Encrypt with passphrase and open
   luks_device:
-    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}{% endif %}"
+    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
     state: opened
     name: "{{ item.encrypt_name }}"
     passphrase: "{{ luks_passphrase }}"
@@ -14,7 +14,7 @@
 
 - name: Add keyfile to passphrase encrypted
   luks_device:
-    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}{% endif %}"
+    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
     state: opened
     name: "{{ item.encrypt_name }}"
     new_keyfile: "/{{ item.encrypt_name }}.keyfile"
