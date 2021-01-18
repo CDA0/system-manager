@@ -1,34 +1,16 @@
 ---
 - name: Create partition filesystems
   filesystem:
-    fstype: "{{ item.1.filesystem }}"
-    dev: "/dev/disk/by-id/{{ item.0.device_id }}-part{{ item.1.number }}"
-  when: item.1.filesystem is defined and item.1.filesystem != "swap"
-  with_subelements:
-    - "{{ sata_drives }}"
-    - partitions
+    fstype: "{{ item.fs_type }}"
+    dev: "{{ item.devices[0] }}"
+  loop: "{{ partition_filesystems }}"
 
-- name: Create lvm filesystems
+ name: Create lvm filesystems
   filesystem:
-    fstype: "{{ item.1.filesystem }}"
-    dev: "/dev/{{ item.0.name }}/{{ item.1.name }}"
-  when: item.1.filesystem is defined and item.1.filesystem != "swap"
-  with_subelements:
-    - "{{ volume_groups }}"
-    - logical_volumes
-
-- name: Create lvm swap
-  filesystem:
-    fstype: "{{ item.1.filesystem }}"
-    dev: "/dev/mapper/{{ item.1.name }}"
-  when: item.1.filesystem is defined and item.1.filesystem == "swap"
-  with_subelements:
-    - "{{ volume_groups }}"
-    - logical_volumes
+    fstype: "{{ item.fs_type }}"
+    dev: "/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}"
+  loop: "{{ lvm_filesystems }}"
 
 - name: Swap
-  command: "swapon /dev/mapper/{{ item.1.name }}"
-  when: ansible_swaptotal_mb < 1 and item.1.filesystem is defined and item.1.filesystem == "swap"
-  with_subelements:
-    - "{{ volume_groups }}"
-    - logical_volumes
+  command: "swapon /dev/{{ item.lvm_vg }}/{{ item.lvm_v_name }}"
+  loop: "{{ swapon }}"

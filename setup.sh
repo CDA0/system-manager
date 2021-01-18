@@ -6,4 +6,4 @@ mount -o remount,size=1G /run/archiso/cowspace
 
 git submodule update --init --recursive
 
-pacman -Sy --noconfirm python ansible
+pacman -Sy --noconfirm python ansible python-jmespath

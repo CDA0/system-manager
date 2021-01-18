@@ -1,18 +1,16 @@
 ---
 - name: Create LVM groups
   lvg:
-    pvs: "{{ item.pvs | join(',') }}"
-    vg: "{{ item.name }}"
+    pvs: "{{ item.devices | join(',') }}"
+    vg: "{{ item.lvm_vg_name }}"
     state: present
   loop: "{{ volume_groups }}"
 
 - name: Create LVM Volumes
   lvol:
-    vg: "{{ item.0.name }}"
-    lv: "{{ item.1.name }}"
-    size: "{{ item.1.size }}"
-    shrink: "{{ item.1.shrink | default(omit) }}"
+    vg: "{{ item.lvm_vg }}"
+    lv: "{{ item.lvm_lv_name }}"
+    size: "{{ item.size }}"
+    shrink: "{{ item.shrink | default(omit) }}"
     state: present
-  with_subelements:
-    - "{{ volume_groups }}"
-    - logical_volumes
+  loop: "{{ logical_volumes }}"

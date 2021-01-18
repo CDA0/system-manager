@@ -21,3 +21,18 @@
 
 - set_fact:
     logical_volumes: "{{ data_disks | json_query('[?type==`lvm_lv`]') }}"
+
+- set_fact:
+    root_fs: "{{ data_disks | json_query('[?path==`/`]') }}"
+
+- set_fact:
+    other_mounts: "{{ data_disks | json_query('[?path&&path!=`/`]') }}"
+
+- set_fact:
+    partition_filesystems: "{{ data_disks | json_query('[?fs_type&&!type]') }}"
+
+- set_fact:
+    lvm_filesystems: "{{ data_disks | json_query('[?fs_type&&type==`lvm_lv`]') }}"
+
+- set_fact:
+    swapon: "{{ data_disks | json_query('[?fs_type==`swap`]') }}"

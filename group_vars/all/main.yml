@@ -2,7 +2,7 @@ machine_aliases:
   20AWS37100: t440p.yml
   VirtualBox: vbox.yml
   'ProLiant MicroServer': hpn40l.yml
-  'To be filled by O.E.M.': periwinkle.yml
+  'GA-78LMT-USB3 R2': periwinkle.yml
 
 locales:
   - en_GB

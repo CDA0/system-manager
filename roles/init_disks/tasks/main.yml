@@ -1,18 +1,14 @@
 ---
 - include: gather_facts.yml
 
-- debug:
-    msg: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}{% if item.partition_number %}-part{{ item.partition_number|string }}{% endif %}{% endif %}"
-  loop: "{{ encrypted }}"
+- include: partition.yml
 
-# - include: partition.yml
+- include: mdadm.yml
 
-# - include: mdadm.yml
+- include: encrypt.yml
 
-# - include: encrypt.yml
+- include: lvm.yml
 
-# - include: lvm.yml
+- include: filesystems.yml
 
-# - include: filesystems.yml
-
-# - include: mounts.yml
+- include: mounts.yml

@@ -43,7 +43,6 @@
     - { role: networkmanager, tags: ['networkmanager'], when: static_ip is not defined }
     - { role: system_tools, tags: ['system_tools'] }
     - { role: grub, tags: ['grub'], when: bootloader == 'grub' }
-    - { role: syslinux, tags: ['syslinux'], when: bootloader == 'syslinux' }
 
 - name: Finish installation
   hosts: localhost
