@@ -2,7 +2,7 @@
 - name: Create partition filesystems
   filesystem:
     fstype: "{{ item.fs_type }}"
-    dev: "{{ item.devices[0] }}part{{ item.partition_number }}"
+    dev: "{{ item.devices[0] }}-part{{ item.partition_number }}"
   loop: "{{ partition_filesystems }}"
 
 - name: Create lvm filesystems
