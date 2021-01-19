@@ -4,3 +4,14 @@
     name: code
     state: present
 
+- name: Install kubectl
+  pacman:
+    name: kubectl
+    state: present
+
+- name: Install kubie
+  become: yes
+  become_user: aurman
+  aur:
+    name: kubie
+    state: present

@@ -10,3 +10,13 @@
   aur:
     name: slack-desktop
     state: present
+
+- name: Install weechat
+  pacman:
+    name: weechat
+    state: present
+
+- name: Install newsboat
+  pacman:
+    name: newsboat
+    state: present
