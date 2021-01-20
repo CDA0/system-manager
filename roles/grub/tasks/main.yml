@@ -14,10 +14,16 @@
   lineinfile:
     path: /etc/default/grub
     regexp: '^(.*)GRUB_CMDLINE_LINUX='
-    line: GRUB_CMDLINE_LINUX="cryptdevice=UUID={{ root_uuid.stdout }}:cryptlvm root=/dev/vg00/root resume=/dev/vg00/swap {{ kernel_cmdline }}"
+    line: GRUB_CMDLINE_LINUX="cryptdevice=UUID={{ root_uuid.stdout }}:cryptlvm root=/dev/vg00/root {% if has_swap %}resume=/dev/vg00/swap {% enfif %}{{ kernel_cmdline }}"
 
 - name: install GRUB bootloader for UEFI
   command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux --recheck
+  when: bootloader_type is "uefi"
+
+- name: install GRUB for bios
+  command: grub-install --target=i386-pc $(mount | grep /boot | awk '{ print $1 }' | tr 0-9 ' ')
+  when: bootloader_type is "bios"
 
 - name: configure GRUB
   command: grub-mkconfig -o /boot/grub/grub.cfg
+

@@ -1,0 +1,14 @@
+---
+- include: gather_facts.yml
+
+- include: partition.yml
+
+- include: mdadm.yml
+
+- include: encrypt.yml
+
+- include: lvm.yml
+
+- include: filesystems.yml
+
+- include: mounts.yml

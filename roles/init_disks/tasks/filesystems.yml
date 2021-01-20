@@ -1,0 +1,16 @@
+---
+- name: Create partition filesystems
+  filesystem:
+    fstype: "{{ item.fs_type }}"
+    dev: "{{ item.devices[0] }}-part{{ item.partition_number }}"
+  loop: "{{ partition_filesystems }}"
+
+- name: Create lvm filesystems
+  filesystem:
+    fstype: "{{ item.fs_type }}"
+    dev: "/dev/{{ item.lvm_vg }}/{{ item.lvm_lv_name }}"
+  loop: "{{ lvm_filesystems }}"
+
+- name: Swap
+  command: "swapon /dev/{{ item.lvm_vg }}/{{ item.lvm_v_name }}"
+  loop: "{{ swapon }}"

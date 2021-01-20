@@ -22,5 +22,6 @@
     state: directory
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
+    mode: 0600
 
 - include: sudo.yml

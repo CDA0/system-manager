@@ -1,7 +1,0 @@
----
-- name: Install weechat
-  pacman:
-    name:
-      - weechat
-      - python-websocket-client
-    state: present

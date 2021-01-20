@@ -1,0 +1,22 @@
+---
+- name: Create key files
+  command: "dd if=/dev/urandom of=/{{ item.partition_name }}.keyfile bs=1 count=256 creates=/{{ item.1.name }}.keyfile"
+  loop: "{{ encrypted_keyfiles }}"
+
+- name: Encrypt with passphrase and open
+  luks_device:
+    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
+    state: opened
+    name: "{{ item.encrypt_name }}"
+    passphrase: "{{ luks_passphrase }}"
+    type: luks2
+  loop: "{{ encrypted }}"
+
+- name: Add keyfile to passphrase encrypted
+  luks_device:
+    device: "{% if item.type == 'raid' %}/dev/md/{{ item.mdadm_name }}{% else %}{{ item.devices[0] }}-part{{ item.partition_number }}{% endif %}"
+    state: opened
+    name: "{{ item.encrypt_name }}"
+    new_keyfile: "/{{ item.encrypt_name }}.keyfile"
+    type: luks2
+  loop: "{{ encrypted_keyfiles }}"

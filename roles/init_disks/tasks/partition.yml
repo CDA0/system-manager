@@ -1,0 +1,14 @@
+---
+- name: Partition drive
+  parted:
+    label: gpt
+    device: "{{ item.devices[0] }}"
+    # Parted indexes partitions starting from 1:
+    number: "{{ item.partition_number }}"
+    name: "{{ item.partition_name|default(omit) }}"
+    part_start: "{{ item.partition_start }}"
+    part_end: "{{ item.partition_end }}"
+    part_type: "{{ item.partition_type|default('primary') }}"
+    flags: "{{ item.partition_flags|default(omit) }}"
+    state: present
+  loop: "{{ partitions }}"

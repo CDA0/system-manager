@@ -1,0 +1,16 @@
+---
+- name: Create LVM groups
+  lvg:
+    pvs: "{{ item.devices | join(',') }}"
+    vg: "{{ item.lvm_vg_name }}"
+    state: present
+  loop: "{{ volume_groups }}"
+
+- name: Create LVM Volumes
+  lvol:
+    vg: "{{ item.lvm_vg }}"
+    lv: "{{ item.lvm_lv_name }}"
+    size: "{{ item.size }}"
+    shrink: "{{ item.shrink | default(omit) }}"
+    state: present
+  loop: "{{ logical_volumes }}"
